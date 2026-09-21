@@ -1,0 +1,604 @@
+/* ==========================================================================
+   CONFIGURAÇÕES GERAIS E VARIÁVEIS
+   ========================================================================== */
+:root {
+    --gold: #C5A059;
+    --gold-hover: #D4AF37;
+    --white: #ffffff;
+    --black: #000000;
+    --dark-grey: #1a1a1a;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    background-color: var(--black);
+    color: var(--white);
+    overflow-x: hidden;
+}
+
+/* ==========================================================================
+   HEADER PRINCIPAL E SLIDESHOW (7 IMAGENS)
+   ========================================================================== */
+.main-header {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background: black;
+}
+
+/* Homepage com slideshow a ocupar o ecrã */
+.main-header.site-hero {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-header.site-hero .top-bar {
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+    border-bottom: none;
+}
+
+.main-header.site-hero .navbar {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    flex-shrink: 0;
+    border-bottom: none;
+    box-shadow: none;
+}
+
+.main-header.site-hero .hero-text {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.main-header.site-hero .logo img {
+    height: 60px;
+    filter: drop-shadow(0 6px 24px rgba(0, 0, 0, 0.55));
+}
+
+/* Páginas internas (ex.: A Escola) — fundo claro, header compacto */
+.main-header.site-static {
+    height: auto;
+    min-height: 0;
+    background: #ffffff;
+    overflow: visible;
+}
+
+.main-header.site-static .top-bar {
+    border-bottom: none;
+}
+
+.main-header.site-static .top-content,
+.main-header.site-static .top-content span,
+.main-header.site-static .social-links a {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.main-header.site-static .navbar {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    background-color: #cacaca;
+    border-bottom: none;
+    box-shadow: none;
+}
+
+.main-header.site-static .nav-menu a {
+    color: #000000;
+}
+
+.main-header.site-static .logo img {
+    filter: none;
+    height: 60px;
+}
+
+
+.slideshow-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Camada escura sobre as fotos para leitura do texto */
+.slideshow-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 2;
+}
+
+.slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    animation: slideAnimation 35s infinite; /* 7 imagens * 5 segundos */
+}
+
+/* Timings da animação para as 7 imagens */
+.slide:nth-child(1) { animation-delay: 0s; }
+.slide:nth-child(2) { animation-delay: 5s; }
+.slide:nth-child(3) { animation-delay: 10s; }
+.slide:nth-child(4) { animation-delay: 15s; }
+.slide:nth-child(5) { animation-delay: 20s; }
+.slide:nth-child(6) { animation-delay: 25s; }
+.slide:nth-child(7) { animation-delay: 30s; }
+
+@keyframes slideAnimation {
+    0% { opacity: 0; }
+    5% { opacity: 1; }  /* Fade In */
+    14% { opacity: 1; } /* Tempo Visível */
+    20% { opacity: 0; } /* Fade Out */
+    100% { opacity: 0; }
+}
+
+/* ==========================================================================
+   TOP BAR (Contactos e Redes Sociais)
+   ========================================================================== */
+.top-bar {
+    position: relative;
+    z-index: 10;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    height: 45px;
+    padding: 12px 0;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 50px;
+}
+
+.top-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: rgba(255,255,255,0.7);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+.contacts {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: wrap;
+}
+
+.social-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.social-links a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    margin-left: 15px;
+    transition: 0.3s;
+}
+
+.social-links a:hover {
+    color: var(--gold);
+}
+
+/* ==========================================================================
+   NAVBAR (Menu de Navegação)
+   ========================================================================== */
+/* Navbar transparente só na homepage com hero */
+.main-header.site-hero .navbar {
+    width: 100%;
+    height: 100px;
+    z-index: 1000;
+    background-color: transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.navbar .container {
+    width: 100%;
+}
+
+/* Estado FIXO quando desces a página */
+.navbar-fixed {
+    position: fixed !important;
+    top: 0 !important; /* Cola mesmo no topo do ecrã */
+    left: 0;
+    height: 100px !important; /* Fica um pouco mais elegante/fina ao descer */
+    background-color: rgba(203, 202, 202, 0.98) !important; /* Cor sólida para leitura */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.navbar-fixed .nav-menu a {
+    color: #1a1a1a !important;
+}
+
+.navbar-fixed .nav-menu a:hover {
+    color: var(--gold) !important;
+}
+
+.navbar-fixed .btn-login {
+    color: #1a1a1a !important;
+    border-color: var(--gold) !important;
+}
+
+.navbar-fixed .btn-login:hover {
+    color: #ffffff !important;
+}
+.nav-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo img {
+    height: 45px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.logo img:hover {
+    transform: scale(1.05);
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-menu a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    transition: 0.3s;
+}
+
+.nav-menu a:hover {
+    color: var(--gold);
+}
+
+/* Botão Login Dourado */
+.btn-login {
+    display: inline-block;
+    color: var(--white) !important;
+    border: 2.5px solid var(--gold) !important;
+    padding: 8px 35px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 12px;
+    transition: 0.3s;
+}
+
+.btn-login:hover {
+    background: var(--gold);
+    color: white !important;
+}
+
+/* =============================================================
+   EFEITO HOVER - LINKS DO MENU E DO RODAPÉ
+   ============================================================= */
+
+/* 1. Links da Navbar (A Escola, Projetos, etc) */
+.nav-menu a {
+    transition: color 0.3s ease; /* Transição suave */
+}
+
+.nav-menu a:hover {
+    color: var(--white) !important;
+}
+
+/* 2. Links do Rodapé (Modalidades, Corpo Docente, etc) */
+.footer-list a {
+    transition: all 0.3s ease;
+}
+
+.footer-list a:hover {
+    color: var(--gold) !important;
+    padding-left: 5px; /* Dá um pequeno toque de movimento para a direita */
+}
+
+/* 3. Títulos do Rodapé (A Escola, Projetos, Inventário) */
+.footer-menu-group h3 a {
+    transition: color 0.3s ease;
+}
+
+.footer-menu-group h3 a:hover {
+    color: var(--gold) !important;
+}
+
+/* 4. Links da Top Bar (FB, IG, YT e Emails) */
+.top-content a:hover, 
+.social-links a:hover {
+    color: var(--gold) !important;
+}
+
+/* ==========================================================================
+   HERO TEXT (Texto Central)
+   ========================================================================== */
+.hero-text {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+    z-index: 10;
+}
+
+.hero-text h1 {
+    color: white;
+    font-size: 4.5rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.gold {
+    color: var(--gold) !important;
+}
+
+.hero-text p {
+    color: white;
+    font-size: 1.2rem;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    font-weight: 300;
+}
+
+/* Botão Ver Horários */
+.btn-gold {
+    display: inline-block;
+    margin-top: 45px;
+    background: var(--gold);
+    color: white;
+    border: none;
+    padding: 20px 40px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-gold:hover {
+    filter: brightness(1.1);
+    transform: scale(1.05);
+}
+
+/* ==========================================================================
+   RESPONSIVIDADE
+   ========================================================================== */
+@media (max-width: 768px) {
+    .hero-text h1 {
+        font-size: 2.5rem;
+    }
+    .logo img {
+        height: 36px;
+    }
+    .nav-menu {
+        display: none; /* Idealmente aqui viria um menu hambúrguer */
+    }
+}
+
+/* ==========================================================================
+   CSS DO RODAPÉ (FOOTER) - BASEADO NA IMAGEM
+   ========================================================================== */
+.main-footer {
+    background-color: #f2f2f2; /* Cinza muito claro */
+    color: #333333;           /* Texto cinza escuro para contraste */
+    padding: 60px 0 40px 0;
+    width: 100%;
+}
+
+.footer-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 50px;
+    display: flex;
+    justify-content: space-between;
+    gap: 40px; /* Espaço entre colunas */
+}
+
+/* Estilos de todas as colunas */
+.footer-col {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Coluna 1: Logótipo e Certificação */
+.footer-col-logo {
+    width: 280px;
+    text-align: center;
+    align-items: center;
+}
+
+.rad-logo {
+    height: 120px; /* Mantém o tamanho equilibrado */
+    width: auto;   /* Garante que não distorce a largura */
+    margin-bottom: 20px;
+    display: block;
+    object-fit: contain;
+}
+
+.footer-col-logo {
+    text-align: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-certification {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.5;
+}
+
+/* Coluna 2: Links Rápidos */
+.footer-col-links {
+    width: 250px;
+    gap: 30px; /* Espaço entre os grupos (A Escola, Projetos) */
+}
+
+.footer-menu-group h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+
+.footer-list {
+    list-style: none;
+}
+
+.footer-list li {
+    margin-bottom: 8px;
+}
+
+.footer-list a {
+    text-decoration: none;
+    color: #666;
+    font-size: 12px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.footer-list a:hover {
+    color: #000; /* Links ficam pretos no hover */
+}
+
+/* Remove o sublinhado e a cor roxa de todos os links do rodapé */
+.footer-col-links a, 
+.footer-col-contacts a {
+    text-decoration: none !important; /* Remove a linha por baixo */
+    color: #000000;                 
+    transition: 0.3s;
+}
+
+/* Garante que os títulos que são links também não ficam roxos */
+.footer-menu-group h3 a {
+    color: #000 !important;          /* Cor preta para os títulos */
+    font-weight: 700;
+}
+
+/* Efeito ao passar o rato (Hover) */
+.footer-col-links a:hover, 
+.footer-menu-group h3 a:hover {
+    color: var(--gold) !important;   /* Fica dourado ao passar o rato */
+}
+
+/* Coluna 3: Contactos e Redes Sociais */
+.footer-col-contacts {
+    width: 380px;
+}
+
+.footer-col-contacts h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.contact-item {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: flex-start; /* Alinha o ícone no topo se o texto quebrar */
+}
+
+.contact-item i {
+    color: #333;
+    font-size: 14px;
+    width: 25px; /* Alinhamento fixo para os ícones */
+    margin-top: 3px;
+    margin-right: 10px;
+}
+
+.contact-item p {
+    font-size: 12px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.phone-call-desc {
+    font-size: 11px;
+    color: #666;
+    margin-top: -5px;
+    display: inline-block;
+}
+
+.footer-social-custom {
+    display: flex;
+    gap: 15px;         /* Aumentei o espaço entre os logos para 25px */
+    margin-top: 25px;
+    align-items: center;
+}
+
+.social-img {
+    width: 45px;       /* Tamanho ligeiramente maior para o efeito redondo ser visível */
+    height: 45px;
+    object-fit: cover; /* Garante que a imagem preenche o círculo sem distorcer */
+    border-radius: 35%; /* Faz a imagem ficar perfeitamente redonda */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.social-img:hover {
+    transform: scale(1.15); /* Efeito de zoom mais pronunciado */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* Pequena sombra ao passar o rato */
+}
+
+/* Garante que o link não tem bordas ou sublinhados */
+.footer-social-custom a {
+    text-decoration: none;
+    border: none;
+    outline: none;
+}
+
+/* Cores específicas de cada ícone */
+.fbc-icon {
+    background-color: #3B5998; /* Azul Facebook */
+}
+
+.igc-icon {
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%); /* Gradiente Instagram */
+}
+
+.ytc-icon {
+    background-color: #FF0000; /* Vermelho Youtube */
+}

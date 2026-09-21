@@ -1,0 +1,457 @@
+/* ==========================================================================
+   1. CONFIGURAÇÕES GERAIS E CORES
+   ========================================================================== */
+:root {
+    --gold: #C5A059;
+    --black: #ffffff;      /* Fundo da página agora é branco */
+    --text-color: #000000; /* Texto principal agora é preto */
+    --dark-bg: #1a1a1a;    /* Para elementos que mantêm o fundo escuro */
+    --light-grey: #f4f4f4;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.page-escola {
+    background-color: #ffffff;
+    color: var(--text-color);
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ==========================================================================
+   TOP BAR (Contactos e Redes Sociais)
+   ========================================================================== */
+.top-bar {
+    position: relative;
+    z-index: 10;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+    height: 45px;
+    padding: 12px 0;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 50px;
+}
+
+.top-content {
+    display: flex;
+    justify-content: space-between;
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+.social-links a {
+    color: rgba(0, 0, 0, 0.7);
+    text-decoration: none;
+    margin-left: 15px;
+    transition: 0.3s;
+}
+
+.social-links a:hover {
+    color: var(--gold);
+}
+
+/* Navbar: começa branca com letras pretas */
+.navbar {
+    background-color: #cacaca;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    transition: all 0.4s ease;
+    border-bottom: 1px solid #cacaca;
+}
+
+/* Estado FIXO quando desces a página */
+.navbar-fixed {
+    position: fixed !important;
+    top: 0 !important; /* Cola mesmo no topo do ecrã */
+    left: 0;
+    height: 70px !important; /* Fica um pouco mais elegante/fina ao descer */
+    background-color: rgba(199, 198, 198, 0.98) !important; /* Cor sólida para leitura */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.nav-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* Logo: invertido para aparecer no fundo branco (usa o logo normal se tiveres) */
+.logo img { 
+    height: 130px; 
+    transition: 0.3s;
+    filter: invert(1); /* Inverte o logo branco para preto caso necessário */
+}
+
+.navbar-fixed .logo img { height: 60px; }
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 25px;
+    align-items: center;
+}
+
+.nav-menu a {
+    color: #000000;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* Botão Login Dourado */
+.btn-login {
+    display: inline-block;
+    color: #ffffff !important;
+    border: 2.5px solid var(--gold) !important;
+    padding: 8px 38px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 12px;
+    transition: 0.3s;
+}
+
+.btn-login:hover {
+    background: var(--gold);
+    color: white !important;
+}
+
+/* =============================================================
+   EFEITO HOVER - LINKS DO MENU E DO RODAPÉ
+   ============================================================= */
+
+/* 1. Links da Navbar (A Escola, Projetos, etc) */
+.nav-menu a {
+    transition: color 0.3s ease; /* Transição suave */
+}
+
+.nav-menu a:hover {
+    color: var(--white) !important;
+}
+
+/* 2. Links do Rodapé (Modalidades, Corpo Docente, etc) */
+.footer-list a {
+    transition: all 0.3s ease;
+}
+
+.footer-list a:hover {
+    color: var(--gold) !important;
+    padding-left: 5px; /* Dá um pequeno toque de movimento para a direita */
+}
+
+/* 3. Títulos do Rodapé (A Escola, Projetos, Inventário) */
+.footer-menu-group h3 a {
+    transition: color 0.3s ease;
+}
+
+.footer-menu-group h3 a:hover {
+    color: var(--gold) !important;
+}
+
+/* 4. Links da Top Bar (FB, IG, YT e Emails) */
+.top-content a:hover, 
+.social-links a:hover {
+    color: var(--gold) !important;
+}
+
+/* ==========================================================================
+   3. BANNER E CONTEÚDO (DUAS COLUNAS - FUNDO BRANCO)
+   ========================================================================== */
+.page-banner {
+    background-color: var(--light-grey);
+    padding: 70px 0 50px;
+    text-align: center;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.page-banner h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.page-banner .gold {
+    color: var(--gold);
+}
+
+.content-section {
+    background-color: #ffffff;
+    color: #333333;
+    padding: 70px 0 90px;
+}
+
+.page-content {
+    padding: 80px 0;
+}
+
+.grid-content {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr;
+    gap: 80px;
+}
+
+.text-main h1,
+.text-main h2 {
+    color: var(--gold);
+    font-size: 2.5rem;
+    margin-bottom: 35px;
+    letter-spacing: 2px;
+    font-weight: 800;
+}
+
+.text-main p {
+    line-height: 1.8;
+    margin-bottom: 25px;
+    color: #333333; /* Cinza escuro para melhor leitura */
+    text-align: justify;
+    font-size: 16px;
+}
+
+/* Coluna da Direita */
+.side-info {
+    border-left: 1px solid rgba(197, 160, 89, 0.4);
+    padding-left: 50px;
+}
+
+.info-block { margin-bottom: 50px; }
+
+.info-block h3 {
+    color: var(--gold);
+    text-transform: uppercase;
+    font-size: 15px;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    font-weight: 700;
+}
+
+.gold-list { list-style: none; }
+.gold-list li {
+    margin-bottom: 12px;
+    font-size: 15px;
+    color: #000000;
+    display: flex;
+    align-items: center;
+}
+
+.gold-list li::before {
+    content: "•";
+    color: var(--gold);
+    margin-right: 15px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.info-block p {
+    font-size: 15px;
+    color: #555555;
+}
+
+/* ==========================================================================
+   CSS DO RODAPÉ (FOOTER) - BASEADO NA IMAGEM
+   ========================================================================== */
+.main-footer {
+    background-color: #f2f2f2; /* Cinza muito claro */
+    color: #333333;           /* Texto cinza escuro para contraste */
+    padding: 60px 0 40px 0;
+    width: 100%;
+}
+
+.footer-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 50px;
+    display: flex;
+    justify-content: space-between;
+    gap: 40px; /* Espaço entre colunas */
+}
+
+/* Estilos de todas as colunas */
+.footer-col {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Coluna 1: Logótipo e Certificação */
+.footer-col-logo {
+    width: 280px;
+    text-align: center;
+    align-items: center;
+}
+
+.rad-logo {
+    height: 120px; /* Mantém o tamanho equilibrado */
+    width: auto;   /* Garante que não distorce a largura */
+    margin-bottom: 20px;
+    display: block;
+    object-fit: contain;
+}
+
+.footer-col-logo {
+    text-align: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-certification {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.5;
+}
+
+/* Coluna 2: Links Rápidos */
+.footer-col-links {
+    width: 250px;
+    gap: 30px; /* Espaço entre os grupos (A Escola, Projetos) */
+}
+
+.footer-menu-group h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+
+.footer-list {
+    list-style: none;
+}
+
+.footer-list li {
+    margin-bottom: 8px;
+}
+
+.footer-list a {
+    text-decoration: none;
+    color: #666;
+    font-size: 12px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.footer-list a:hover {
+    color: #000; /* Links ficam pretos no hover */
+}
+
+/* Remove o sublinhado e a cor roxa de todos os links do rodapé */
+.footer-col-links a, 
+.footer-col-contacts a {
+    text-decoration: none !important; /* Remove a linha por baixo */
+    color: #000000;                 
+    transition: 0.3s;
+}
+
+/* Garante que os títulos que são links também não ficam roxos */
+.footer-menu-group h3 a {
+    color: #000 !important;          /* Cor preta para os títulos */
+    font-weight: 700;
+}
+
+/* Efeito ao passar o rato (Hover) */
+.footer-col-links a:hover, 
+.footer-menu-group h3 a:hover {
+    color: var(--gold) !important;   /* Fica dourado ao passar o rato */
+}
+
+/* Coluna 3: Contactos e Redes Sociais */
+.footer-col-contacts {
+    width: 380px;
+}
+
+.footer-col-contacts h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.contact-item {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: flex-start; /* Alinha o ícone no topo se o texto quebrar */
+}
+
+.contact-item i {
+    color: #333;
+    font-size: 14px;
+    width: 25px; /* Alinhamento fixo para os ícones */
+    margin-top: 3px;
+    margin-right: 10px;
+}
+
+.contact-item p {
+    font-size: 12px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.phone-call-desc {
+    font-size: 11px;
+    color: #666;
+    margin-top: -5px;
+    display: inline-block;
+}
+
+.footer-social-custom {
+    display: flex;
+    gap: 15px;         /* Aumentei o espaço entre os logos para 25px */
+    margin-top: 25px;
+    align-items: center;
+}
+
+.social-img {
+    width: 45px;       /* Tamanho ligeiramente maior para o efeito redondo ser visível */
+    height: 45px;
+    object-fit: cover; /* Garante que a imagem preenche o círculo sem distorcer */
+    border-radius: 35%; /* Faz a imagem ficar perfeitamente redonda */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.social-img:hover {
+    transform: scale(1.15); /* Efeito de zoom mais pronunciado */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* Pequena sombra ao passar o rato */
+}
+
+/* Garante que o link não tem bordas ou sublinhados */
+.footer-social-custom a {
+    text-decoration: none;
+    border: none;
+    outline: none;
+}
+
+/* Cores específicas de cada ícone */
+.fbc-icon {
+    background-color: #3B5998; /* Azul Facebook */
+}
+
+.igc-icon {
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%); /* Gradiente Instagram */
+}
+
+.ytc-icon {
+    background-color: #FF0000; /* Vermelho Youtube */
+}
