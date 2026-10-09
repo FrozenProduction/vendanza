@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Ent'Artes - Gestão de Horários</title>
+    <link rel="stylesheet" href="assets/vendors/feather/feather.css">
+    <link rel="stylesheet" href="assets/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="assets/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="assets/vendors/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/vendors/typicons/typicons.css">
+    <link rel="stylesheet" href="assets/vendors/simple-line-icons/css/simple-line-icons.css">
+    <link rel="stylesheet" href="assets/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/admin-timetable.css">
+    <link rel="icon" type="image/x-icon" href="/admin/assets/images/faviconVendanza.ico" />
+
+    <script src="backend/backendadmin.js" defer></script>
+  </head>
+  <body class="with-welcome-text">
+    <div class="container-scroller">
+      <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+          <div class="me-3">
+            <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize"><span class="icon-menu"></span></button>
+          </div>
+          <a class="navbar-brand brand-logo" href="admindashboard.html"><img src="../imagens/LOGOENTARTESESCOLADEDANARBRANCO.png" style="width: 1000px; height: auto;"></a>
+        </div>
+        <div class="navbar-menu-wrapper d-flex align-items-top">
+          <ul class="navbar-nav"><li class="nav-item fw-semibold d-none d-lg-block ms-0"><h1 class="welcome-text">Bom dia, <span id="nome-saudacao" class="text-black fw-bold">...</span></h1></li></ul>
+          <ul class="navbar-nav ms-auto">
+             <li class="nav-item dropdown d-none d-lg-block user-dropdown">
+                <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown">
+                  <div id="user-initials-avatar" class="img-xs rounded-circle d-flex align-items-center justify-content-center fw-bold text-white" style="background-color: #6c757d; width: 35px; height: 35px; font-size: 14px;">
+                    ??
+                  </div>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right navbar-dropdown">
+                  <p id="perfil-nome-completo" class="mb-1 mt-3 fw-semibold" style="text-align: center;">Carregando...</p>
+                  <p id="perfil-email" class="fw-light text-muted mb-0" style="text-align: center;">...</p>
+                  <a class="dropdown-item" onclick="executarLogout()"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Sign Out</a>
+                </div>
+              </li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="container-fluid page-body-wrapper">
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+          <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link" href="admindashboard.html">
+                <i class="mdi mdi-grid-large menu-icon"></i>
+                <span class="menu-title">Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-item nav-category">Gestão</li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+                <i class="menu-icon fa fa-address-card"></i>
+                <span class="menu-title">Gestão da Informação</span>
+                <i class="menu-arrow"></i>
+              </a>
+              <div class="collapse" id="ui-basic">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="pages/gestao/gestao_utilizadores.html">Gestão de Utilizadores</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/gestao/gestao_enceducacao.html">Gestão de Encarregados de Educação</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/gestao/gestao_direcao.html">Gestão de Direção</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/gestao/gestao_professores.html">Gestão de Professores</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/gestao/gestao_horarios.html">Gestão de Horários</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/gestao/gestao_aulas.html">Gestão de Aulas</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/gestao/gestao_estudios.html">Gestão de Estúdios</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/gestao/gestao_modalidades.html">Gestão de Modalidades</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/gestao/gestao_presencas.html">Gestão de Presenças</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/gestao/gestao_inscricoes.html">Gestão de Inscrições</a></li>
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item nav-category">Gestão de Aprovações</li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
+                <i class="menu-icon fa fa-check"></i>
+                <span class="menu-title">Atribuições</span>
+                <i class="menu-arrow"></i>
+              </a>
+              <div class="collapse" id="form-elements">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="pages/atribuicao/atribuicao_atrsalas.html">Atribuições de Salas</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/atribuicao/atribuicao_aluguer.html">Atribuições de Aluguer</a></li>
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item nav-category">Financeiro</li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
+                <i class="menu-icon fa fa-bank"></i>
+                <span class="menu-title">Financeiro</span>
+                <i class="menu-arrow"></i>
+              </a>
+              <div class="collapse" id="tables">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="pages/faturacao/faturacao_validacaofaturacao.html">Validação e Faturação</a></li>
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item nav-category">MarketPlace</li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
+                <i class="menu-icon fa fa-suitcase"></i>
+                <span class="menu-title">Inventário</span>
+                <i class="menu-arrow"></i>
+              </a>
+              <div class="collapse" id="icons">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item"> <a class="nav-link" href="pages/inventario/inventario_figurinos.html">Figurinos</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/inventario/inventario_acessorios.html">Acessórios</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/inventario/inventario_cenarios.html">Cenários</a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/inventario/inventario_todos.html">Todos</a></li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="home-tab">
+                  <div class="schedule-toolbar border-bottom pb-3">
+                    <div class="schedule-week-nav">
+                      <button type="button" class="btn-week" onclick="mudarSemana(-1)" title="Semana anterior" aria-label="Semana anterior">&#10094;</button>
+                      <span id="week-range-label" class="schedule-week-label">—</span>
+                      <button type="button" class="btn-week" onclick="mudarSemana(1)" title="Semana seguinte" aria-label="Semana seguinte">&#10095;</button>
+                      <button type="button" class="btn-today" onclick="irParaSemanaAtual()">Hoje</button>
+                    </div>
+                    <div class="schedule-filters" id="filters-regular">
+                      <div class="schedule-filter-field">
+                        <label for="filter-modality"><i class="mdi mdi-book-education"></i> Modalidade</label>
+                        <select id="filter-modality" class="schedule-select" onchange="atualizarFiltroDocentes()"></select>
+                      </div>
+                      <div class="schedule-filter-field">
+                        <label for="filter-instructor"><i class="mdi mdi-account-tie"></i> Professor</label>
+                        <select id="filter-instructor" class="schedule-select" onchange="renderizarGrelhaRegular()"></select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="schedule-tab-group" role="tablist">
+                    <button type="button" class="schedule-tab active" id="tab-regular" data-bs-toggle="tab" data-bs-target="#pane-regular" role="tab">
+                      <i class="mdi mdi-calendar-week"></i> Mapa de Aulas
+                    </button>
+                    <button type="button" class="schedule-tab" id="tab-coaching" data-bs-toggle="tab" data-bs-target="#pane-coaching" role="tab">
+                      <i class="mdi mdi-account-star"></i> Coaching
+                    </button>
+                  </div>
+
+                  <div class="tab-content tab-content-basic">
+                    <div class="tab-pane fade show active" id="pane-regular" role="tabpanel">
+                      <p class="schedule-section-hint mt-2">Horário semanal recorrente das turmas regulares. Use os filtros para modalidade e professor.</p>
+                      <div class="card card-rounded">
+                        <div class="card-body">
+                          <div class="timetable-main-container" id="timetable-regular">
+                            <div class="timetable-header-grid" id="header-regular">
+                              <div class="time-corner">Hora</div>
+                              <div class="day-label" data-day="1">Segunda</div>
+                              <div class="day-label" data-day="2">Terça</div>
+                              <div class="day-label" data-day="3">Quarta</div>
+                              <div class="day-label" data-day="4">Quinta</div>
+                              <div class="day-label" data-day="5">Sexta</div>
+                              <div class="day-label" data-day="6">Sábado</div>
+                            </div>
+                            <div class="timetable-body-grid">
+                              <div class="time-gutter" id="time-gutter-regular"></div>
+                              <div class="day-slot" id="day-reg-1"></div>
+                              <div class="day-slot" id="day-reg-2"></div>
+                              <div class="day-slot" id="day-reg-3"></div>
+                              <div class="day-slot" id="day-reg-4"></div>
+                              <div class="day-slot" id="day-reg-5"></div>
+                              <div class="day-slot" id="day-reg-6"></div>
+                            </div>
+                          </div>
+                          <div class="schedule-legend">
+                            <span><i class="dot dot-regular"></i> Aula regular</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="pane-coaching" role="tabpanel">
+                      <p class="schedule-section-hint mt-2">Coachings e aulas particulares agendados na semana selecionada (navegue com as setas acima).</p>
+                      <div class="card card-rounded">
+                        <div class="card-body">
+                          <div class="timetable-main-container" id="timetable-coaching">
+                            <div class="timetable-header-grid" id="header-coaching">
+                              <div class="time-corner">Hora</div>
+                              <div class="day-label" data-day="1">—</div>
+                              <div class="day-label" data-day="2">—</div>
+                              <div class="day-label" data-day="3">—</div>
+                              <div class="day-label" data-day="4">—</div>
+                              <div class="day-label" data-day="5">—</div>
+                              <div class="day-label" data-day="6">—</div>
+                            </div>
+                            <div class="timetable-body-grid">
+                              <div class="time-gutter" id="time-gutter-coaching"></div>
+                              <div class="day-slot" id="day-coach-1"></div>
+                              <div class="day-slot" id="day-coach-2"></div>
+                              <div class="day-slot" id="day-coach-3"></div>
+                              <div class="day-slot" id="day-coach-4"></div>
+                              <div class="day-slot" id="day-coach-5"></div>
+                              <div class="day-slot" id="day-coach-6"></div>
+                            </div>
+                          </div>
+                          <div id="coaching-empty-msg" class="coaching-empty d-none">Sem coachings marcados nesta semana.</div>
+                          <div class="schedule-legend">
+                            <span><i class="dot dot-coaching"></i> Coaching / aula particular</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <footer class="footer">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+              <span class="text-muted text-center">Copyright © 2026. Ent'Artes Escola de Dança</span>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: aula regular -->
+    <div class="modal fade schedule-modal" id="modal-horario-regular" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div>
+              <span class="schedule-modal-badge regular">Aula regular</span>
+              <h5 class="modal-title mt-2 mb-0" id="modal-reg-titulo">—</h5>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <div class="schedule-detail-grid">
+              <div class="schedule-detail-item"><label>Dia</label><p id="modal-reg-dia">—</p></div>
+              <div class="schedule-detail-item"><label>Horário</label><p id="modal-reg-horario">—</p></div>
+              <div class="schedule-detail-item"><label>Professor</label><p id="modal-reg-professor">—</p></div>
+              <div class="schedule-detail-item"><label>Estúdio</label><p id="modal-reg-estudio">—</p></div>
+              <div class="schedule-detail-item full-width"><label>Modalidade</label><p id="modal-reg-modalidade">—</p></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Fechar</button>
+            <a href="#" id="modal-reg-btn-editar" class="btn btn-primary">Editar horário</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: coaching -->
+    <div class="modal fade schedule-modal" id="modal-coaching" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div>
+              <span class="schedule-modal-badge coaching">Coaching</span>
+              <h5 class="modal-title mt-2 mb-0" id="modal-coach-titulo">—</h5>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <div class="schedule-detail-grid">
+              <div class="schedule-detail-item"><label>Data</label><p id="modal-coach-data">—</p></div>
+              <div class="schedule-detail-item"><label>Horário</label><p id="modal-coach-horario">—</p></div>
+              <div class="schedule-detail-item"><label>Professor</label><p id="modal-coach-professor">—</p></div>
+              <div class="schedule-detail-item"><label>Aluno</label><p id="modal-coach-aluno">—</p></div>
+              <div class="schedule-detail-item"><label>Estúdio</label><p id="modal-coach-estudio">—</p></div>
+              <div class="schedule-detail-item"><label>Estado</label><p id="modal-coach-estado">—</p></div>
+              <div class="schedule-detail-item"><label>Formato</label><p id="modal-coach-formato">—</p></div>
+              <div class="schedule-detail-item"><label>Duração / Preço</label><p id="modal-coach-preco">—</p></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Fechar</button>
+            <button type="button" class="btn btn-danger" id="modal-coach-btn-eliminar">Eliminar</button>
+            <a href="#" id="modal-coach-btn-editar" class="btn btn-primary">Editar coaching</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/vendors/js/vendor.bundle.base.js"></script>
+    <script src="assets/js/off-canvas.js"></script>
+    <script src="assets/js/template.js"></script>
+    <script src="assets/js/hoverable-collapse.js"></script>
+    <script>
+      document.querySelectorAll('[data-bs-toggle="tab"]').forEach(function (tab) {
+        tab.addEventListener('shown.bs.tab', function (e) {
+          document.querySelectorAll('.schedule-tab').forEach(function (t) { t.classList.remove('active'); });
+          e.target.classList.add('active');
+          var filters = document.getElementById('filters-regular');
+          if (filters) {
+            filters.style.display = e.target.id === 'tab-coaching' ? 'none' : '';
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

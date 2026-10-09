@@ -1,0 +1,405 @@
+/* Admin dashboard — mapa de aulas + coaching */
+.schedule-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.schedule-week-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  padding: 0.35rem 0.5rem;
+}
+
+.schedule-week-nav .btn-week {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: #fff;
+  color: #1a1a2e;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.schedule-week-nav .btn-week:hover {
+  background: #1a1a2e;
+  color: #fff;
+}
+
+.schedule-week-label {
+  min-width: 200px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #333;
+  padding: 0 0.5rem;
+}
+
+.schedule-week-nav .btn-today {
+  margin-left: 0.25rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  background: #fff;
+  cursor: pointer;
+}
+
+.schedule-week-nav .btn-today:hover {
+  border-color: #c5a059;
+  color: #c5a059;
+}
+
+/* Tabs estilo segmentado */
+.schedule-tab-group {
+  display: inline-flex;
+  gap: 0.35rem;
+  padding: 0.35rem;
+  background: #eef0f4;
+  border-radius: 12px;
+  border: 1px solid #e2e6ea;
+  margin-top: 0.75rem;
+}
+
+.schedule-tab-group .schedule-tab {
+  border: none;
+  background: transparent;
+  color: #5c6370;
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding: 0.55rem 1.25rem;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.schedule-tab-group .schedule-tab i {
+  font-size: 1.05rem;
+}
+
+.schedule-tab-group .schedule-tab:hover {
+  color: #1a1a2e;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.schedule-tab-group .schedule-tab.active {
+  background: #fff;
+  color: #1a1a2e;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Filtros */
+.schedule-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.schedule-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 200px;
+}
+
+.schedule-filter-field label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.schedule-filter-field label i {
+  font-size: 0.95rem;
+  color: #c5a059;
+}
+
+.schedule-select {
+  appearance: none;
+  min-width: 200px;
+  padding: 0.55rem 2.25rem 0.55rem 0.85rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #1f2937;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
+  border: 1px solid #dde1e6;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.schedule-select:hover {
+  border-color: #c5a059;
+}
+
+.schedule-select:focus {
+  outline: none;
+  border-color: #c5a059;
+  box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.2);
+}
+
+.schedule-section-hint {
+  font-size: 0.8rem;
+  color: #6c757d;
+  margin: 0 0 0.75rem 0;
+}
+
+.timetable-main-container {
+  border: 1px solid #e8eaed;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.timetable-header-grid {
+  display: grid;
+  grid-template-columns: 72px repeat(6, 1fr);
+  background: linear-gradient(180deg, #f8f9fb 0%, #f1f3f6 100%);
+  border-bottom: 2px solid #e2e6ea;
+  text-align: center;
+  font-weight: 700;
+}
+
+.time-corner,
+.day-label {
+  padding: 10px 6px;
+  font-size: 0.8rem;
+  color: #374151;
+}
+
+.day-label .day-date {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.day-label.is-today {
+  background: rgba(197, 160, 89, 0.15);
+  color: #1a1a2e;
+}
+
+.timetable-body-grid {
+  --schedule-hours: 13;
+  --schedule-row-h: 56px;
+  display: grid;
+  grid-template-columns: 72px repeat(6, 1fr);
+  height: auto;
+  min-height: calc(var(--schedule-hours) * var(--schedule-row-h));
+  overflow: visible;
+  position: relative;
+  background: #fafbfc;
+}
+
+.time-gutter {
+  border-right: 1px solid #e8eaed;
+  background: #f5f6f8;
+}
+
+.hour-mark {
+  height: 56px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 4px;
+  font-size: 0.7rem;
+  color: #9ca3af;
+  border-bottom: 1px solid #eef0f2;
+}
+
+.day-slot {
+  position: relative;
+  min-height: calc(var(--schedule-hours) * var(--schedule-row-h));
+  border-right: 1px solid #eef0f2;
+  background-image: linear-gradient(#eef0f2 1px, transparent 1px);
+  background-size: 100% var(--schedule-row-h);
+}
+
+.class-entry {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  border-left: 4px solid rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s, box-shadow 0.15s;
+  cursor: pointer;
+  z-index: 2;
+  overflow: hidden;
+  line-height: 1.25;
+}
+
+.class-entry:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  z-index: 10;
+}
+
+.class-entry .entry-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: block;
+}
+
+.class-entry .entry-meta {
+  font-size: 0.65rem;
+  opacity: 0.95;
+  font-weight: 500;
+}
+
+.type-default { background: linear-gradient(135deg, #6b7280, #4b5563); }
+.type-yoga { background: linear-gradient(135deg, #10b981, #059669); }
+.type-boxe { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.type-dança { background: linear-gradient(135deg, #ec4899, #db2777); }
+.type-coaching {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border-left-color: #312e81;
+}
+
+.coaching-empty {
+  padding: 2rem;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.schedule-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.schedule-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.schedule-legend .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.schedule-legend .dot-regular { background: #6b7280; }
+.schedule-legend .dot-coaching { background: #6366f1; }
+
+/* Modais do horário */
+.schedule-modal .modal-content {
+  border: none;
+  border-radius: 14px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+.schedule-modal .modal-header {
+  border-bottom: 1px solid #eef0f2;
+  padding: 1.25rem 1.5rem;
+}
+
+.schedule-modal .modal-body {
+  padding: 1.25rem 1.5rem;
+}
+
+.schedule-modal .modal-footer {
+  border-top: 1px solid #eef0f2;
+  padding: 1rem 1.5rem;
+  gap: 0.5rem;
+}
+
+.schedule-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.25rem;
+}
+
+.schedule-detail-item label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9ca3af;
+  margin-bottom: 0.25rem;
+}
+
+.schedule-detail-item p {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.schedule-detail-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.schedule-modal-badge {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.schedule-modal-badge.regular {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.schedule-modal-badge.coaching {
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+@media (max-width: 992px) {
+  .schedule-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .schedule-week-nav {
+    justify-content: center;
+  }
+
+  .schedule-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .schedule-filter-field {
+    min-width: 100%;
+  }
+
+  .schedule-select {
+    width: 100%;
+  }
+}
