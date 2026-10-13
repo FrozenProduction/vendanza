@@ -15,22 +15,19 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    /** Chave de assinatura. Vem de JWT_SECRET (variavel de ambiente no Render).
-     *  O fallback abaixo existe so para o servico nao parar enquanto o JWT_SECRET ainda
-     *  nao estiver definido: enquanto isto aparecer no codigo, qualquer pessoa que veja o
-     *  repositorio pode forjar um token. Definir JWT_SECRET e apagar esta constante. */
+    /** Chave de assinatura, obrigatoriamente vinda de JWT_SECRET (>= 32 caracteres).
+     *  Falha no arranque de proposito: e melhor a aplicacao nao arrancar do que assinar tokens
+     *  com uma chave que esta publica no repositorio. */
     private static final String SECRET_KEY = resolverChave();
     private static final String CLAIM_TIPO = "tipo";
-    private static final String CHAVE_DEV = "sua_chave_secreta_muito_longa_e_segura_para_o_vendanza_backend";
 
     private static String resolverChave() {
         String doAmbiente = System.getenv("JWT_SECRET");
-        if (doAmbiente != null && doAmbiente.trim().length() >= 32) {
-            return doAmbiente.trim();
+        if (doAmbiente == null || doAmbiente.trim().length() < 32) {
+            throw new IllegalStateException("JWT_SECRET nao esta definido (ou tem menos de 32 "
+                    + "caracteres). Definir a variavel de ambiente JWT_SECRET antes de arrancar.");
         }
-        System.out.println("[SEGURANCA] JWT_SECRET ausente ou com menos de 32 caracteres — a usar a\n"
-                + "chave de desenvolvimento que esta no repositorio. Definir JWT_SECRET no Render.");
-        return CHAVE_DEV;
+        return doAmbiente.trim();
     }
 
     public String extractUsername(String token) {

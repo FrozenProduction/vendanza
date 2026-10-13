@@ -48,8 +48,9 @@ vendanza/
 ### Backend
 
 1. Criar uma base de dados PostgreSQL e carregar `vendanza-frontend/db-postgres.sql`.
-2. Definir `DB_URL`, `DB_USER` e `DB_PASSWORD` (o `application.properties` versionado lê essas
-   variáveis de ambiente e não tem segredos).
+2. Definir `DB_URL`, `DB_USER`, `DB_PASSWORD` e `JWT_SECRET` (mínimo 32 caracteres) — lidos do
+   ambiente; sem `JWT_SECRET` a aplicação não arranca (de propósito: nunca assinar tokens com uma
+   chave que esteja no repositório).
 3. Correr:
 
 ```bash
