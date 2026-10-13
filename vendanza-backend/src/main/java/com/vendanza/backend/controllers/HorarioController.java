@@ -1,5 +1,7 @@
 package com.vendanza.backend.controllers;
 //import com.vendanza.backend.models.DadosAluno;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.vendanza.backend.models.Horario;
 import com.vendanza.backend.repositories.HorarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/horario")
 public class HorarioController {
+
+    private static final Logger log = LoggerFactory.getLogger(HorarioController.class);
 
     @Autowired
     private HorarioRepository horarioRepository;
@@ -89,7 +93,8 @@ public class HorarioController {
             return ResponseEntity.ok(salvo);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Erro ao salvar horário: " + e.getMessage());
+            log.error("Erro ao salvar horário", e);
+            return ResponseEntity.status(500).body("Erro ao salvar horário. Tente novamente.");
         }
     }
 

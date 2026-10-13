@@ -1,5 +1,7 @@
 package com.vendanza.backend.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.vendanza.backend.models.Inscricoes;
 import com.vendanza.backend.repositories.InscricoesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import java.util.List;
 @RequestMapping("/api/inscricoes")
 @CrossOrigin(origins = "*")
 public class InscricoesController {
+
+    private static final Logger log = LoggerFactory.getLogger(InscricoesController.class);
 
     @Autowired
     private InscricoesRepository inscricoesRepository;
@@ -42,7 +46,8 @@ public class InscricoesController {
             Inscricoes guardada = inscricoesRepository.save(inscricao);
             return ResponseEntity.ok(guardada);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erro ao guardar inscrição: " + e.getMessage());
+            log.error("Erro ao guardar inscrição", e);
+            return ResponseEntity.status(500).body("Erro ao guardar inscrição. Tente novamente.");
         }
     }
 
@@ -56,7 +61,8 @@ public class InscricoesController {
             }
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erro ao eliminar inscrição: " + e.getMessage());
+            log.error("Erro ao eliminar inscrição", e);
+            return ResponseEntity.status(500).body("Erro ao eliminar inscrição. Tente novamente.");
         }
     }
 }

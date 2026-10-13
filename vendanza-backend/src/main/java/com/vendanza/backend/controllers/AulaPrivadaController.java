@@ -1,5 +1,7 @@
 package com.vendanza.backend.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.vendanza.backend.models.*;
 import com.vendanza.backend.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import java.util.Optional;
 @RequestMapping("/api/aulas-privadas")
 @CrossOrigin(origins = "*")
 public class AulaPrivadaController {
+
+    private static final Logger log = LoggerFactory.getLogger(AulaPrivadaController.class);
 
     @Autowired private AulaPrivadaRepository repository;
     @Autowired private AulaRepository aulaRepository;
@@ -35,7 +39,8 @@ public class AulaPrivadaController {
             return ResponseEntity.ok(lista);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Erro ao carregar aulas: " + e.getMessage());
+            log.error("Erro ao carregar aulas", e);
+            return ResponseEntity.status(500).body("Erro ao carregar aulas. Tente novamente.");
         }
     }
 
@@ -102,7 +107,8 @@ public class AulaPrivadaController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Erro interno forçado: " + e.getMessage());
+            log.error("Erro interno forçado", e);
+            return ResponseEntity.status(500).body("Erro interno forçado. Tente novamente.");
         }
     }
 
@@ -116,7 +122,8 @@ public class AulaPrivadaController {
             }
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erro ao eliminar: " + e.getMessage());
+            log.error("Erro ao eliminar", e);
+            return ResponseEntity.status(500).body("Erro ao eliminar. Tente novamente.");
         }
     }
  
@@ -187,7 +194,8 @@ public class AulaPrivadaController {
         } catch (Exception e) {
             System.err.println("DEBUG: Erro ao criar aula: " + e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Erro ao criar aula privada: " + e.getMessage());
+            log.error("Erro ao criar aula privada", e);
+            return ResponseEntity.status(500).body("Erro ao criar aula privada. Tente novamente.");
         }
     }
 
@@ -198,7 +206,8 @@ public class AulaPrivadaController {
             return ResponseEntity.ok(lista);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Erro ao carregar aulas do encarregado: " + e.getMessage());
+            log.error("Erro ao carregar aulas do encarregado", e);
+            return ResponseEntity.status(500).body("Erro ao carregar aulas do encarregado. Tente novamente.");
         }
     }
 
@@ -209,7 +218,8 @@ public class AulaPrivadaController {
             return ResponseEntity.ok(lista);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Erro ao carregar aulas do docente: " + e.getMessage());
+            log.error("Erro ao carregar aulas do docente", e);
+            return ResponseEntity.status(500).body("Erro ao carregar aulas do docente. Tente novamente.");
         }
     }
 
@@ -239,7 +249,8 @@ public class AulaPrivadaController {
             return ResponseEntity.ok(aula);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Erro ao atualizar estado: " + e.getMessage());
+            log.error("Erro ao atualizar estado", e);
+            return ResponseEntity.status(500).body("Erro ao atualizar estado. Tente novamente.");
         }
     }
 

@@ -1,5 +1,7 @@
 package com.vendanza.backend.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.vendanza.backend.models.Pagamentos;
 import com.vendanza.backend.repositories.PagamentosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import java.util.List;
 @RequestMapping("/api/pagamentos")
 @CrossOrigin(origins = "*")
 public class PagamentosController {
+
+    private static final Logger log = LoggerFactory.getLogger(PagamentosController.class);
 
     @Autowired
     private PagamentosRepository pagamentosRepository;
@@ -48,7 +52,8 @@ public class PagamentosController {
             return ResponseEntity.ok(salvo);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Erro ao guardar: " + e.getMessage());
+            log.error("Erro ao guardar", e);
+            return ResponseEntity.status(500).body("Erro ao guardar. Tente novamente.");
         }
     }
 
@@ -63,7 +68,8 @@ public class PagamentosController {
             return ResponseEntity.ok(salvo);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Erro ao faturar: " + e.getMessage());
+            log.error("Erro ao faturar", e);
+            return ResponseEntity.status(500).body("Erro ao faturar. Tente novamente.");
         }
     }
 
@@ -77,7 +83,8 @@ public class PagamentosController {
             pagamentosRepository.deleteById(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erro ao eliminar: " + e.getMessage());
+            log.error("Erro ao eliminar", e);
+            return ResponseEntity.status(500).body("Erro ao eliminar. Tente novamente.");
         }
     }
 }

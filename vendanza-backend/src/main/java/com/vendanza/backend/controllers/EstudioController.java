@@ -2,6 +2,8 @@ package com.vendanza.backend.controllers;
 
 //import com.vendanza.backend.models.DadosDirecao;
 //import com.vendanza.backend.models.DadosDocente;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.vendanza.backend.models.Estudio;
 import com.vendanza.backend.repositories.EstudioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import java.util.List;
 @RequestMapping("/api/estudios")
 @CrossOrigin(origins = "*")
 public class EstudioController {
+
+    private static final Logger log = LoggerFactory.getLogger(EstudioController.class);
 
     @Autowired
     private EstudioRepository estudioRepository;
@@ -42,7 +46,8 @@ public class EstudioController {
             Estudio guardado = estudioRepository.save(estudio);
             return ResponseEntity.ok(guardado);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erro ao guardar estúdio: " + e.getMessage());
+            log.error("Erro ao guardar estúdio", e);
+            return ResponseEntity.status(500).body("Erro ao guardar estúdio. Tente novamente.");
         }
     }
 
@@ -56,7 +61,8 @@ public class EstudioController {
             }
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erro ao eliminar estúdio: " + e.getMessage());
+            log.error("Erro ao eliminar estúdio", e);
+            return ResponseEntity.status(500).body("Erro ao eliminar estúdio. Tente novamente.");
         }
     }
 

@@ -27,7 +27,7 @@ public class UtilizadorService {
                 .orElseThrow(() -> new RuntimeException("Credenciais inválidas"));
 
         if (BCrypt.checkpw(request.getPassword(), user.getPassword())) {
-            String token = jwtService.generateToken(user.getEmail());
+            String token = jwtService.generateToken(user.getEmail(), user.getTipo());
             return new AuthResponse(token, user);
         } else {
             throw new RuntimeException("Credenciais inválidas");

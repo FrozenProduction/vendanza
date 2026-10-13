@@ -1,9 +1,12 @@
 package com.vendanza.backend.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.vendanza.backend.models.*;
 import com.vendanza.backend.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -15,6 +18,8 @@ import java.util.Optional;
 @RequestMapping("/api/presencas")
 @CrossOrigin(origins = "*")
 public class PresencaController {
+
+    private static final Logger log = LoggerFactory.getLogger(PresencaController.class);
 
     @Autowired private PresencasRepository presencasRepository;
     @Autowired private AulaRepository aulaRepository;
@@ -35,7 +40,8 @@ public class PresencaController {
             Optional<Presencas> presenca = presencasRepository.findByEncarregadoIdEncEducacaoAndAulaIdHorarioAndAulaDataAula(idEncarregado, idHorario, date);
             return ResponseEntity.ok(Map.of("presente", presenca.isPresent()));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erro ao verificar presença: " + e.getMessage());
+            log.error("Erro ao verificar presença", e);
+            return ResponseEntity.status(500).body("Erro ao verificar presença. Tente novamente.");
         }
     }
 
@@ -56,11 +62,13 @@ public class PresencaController {
             return ResponseEntity.ok(resumo);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Erro ao listar presenças: " + e.getMessage());
+            log.error("Erro ao listar presenças", e);
+            return ResponseEntity.status(500).body("Erro ao listar presenças. Tente novamente.");
         }
     }
 
     @PostMapping("/marcar")
+    @Transactional
     public ResponseEntity<?> marcarPresenca(@RequestBody Map<String, Object> payload) {
         try {
             Integer idHorario = (Integer) payload.get("idHorario");
@@ -137,7 +145,8 @@ public class PresencaController {
             return ResponseEntity.ok(Map.of("message", "Presença marcada com sucesso!", "idAula", aula.getIdAula()));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Erro ao marcar presença: " + e.getMessage());
+            log.error("Erro ao marcar presença", e);
+            return ResponseEntity.status(500).body("Erro ao marcar presença. Tente novamente.");
         }
     }
 }

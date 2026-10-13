@@ -5,6 +5,8 @@ import com.vendanza.backend.dto.LoginRequest;
 import com.vendanza.backend.services.UtilizadorService;
 import com.vendanza.backend.models.*;
 import com.vendanza.backend.repositories.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,8 @@ import java.util.Map;
 @RequestMapping("/api/utilizadores")
 @CrossOrigin(origins = "*") 
 public class UtilizadorController {
+
+    private static final Logger log = LoggerFactory.getLogger(UtilizadorController.class);
 
     @Autowired private UtilizadorService utilizadorService;
     @Autowired private UtilizadorRepository utilizadorRepository;
@@ -41,7 +45,9 @@ public class UtilizadorController {
             user.setTipo(2);
             return ResponseEntity.ok(utilizadorService.registar(user));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(e.getMessage());
+            log.error("Erro ao registar o utilizador", e);
+            return ResponseEntity.status(500).body("Erro ao registar o utilizador. Tente novamente.");
+
         }
     }
 
@@ -55,7 +61,9 @@ public class UtilizadorController {
         try {
             return ResponseEntity.ok(utilizadorService.guardarAlunoCompleto(payload));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(e.getMessage());
+            log.error("Erro ao guardar o encarregado", e);
+            return ResponseEntity.status(500).body("Erro ao guardar o encarregado. Tente novamente.");
+
         }
     }
 
@@ -64,7 +72,9 @@ public class UtilizadorController {
         try {
             return ResponseEntity.ok(utilizadorService.guardarDocenteCompleto(payload));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(e.getMessage());
+            log.error("Erro ao guardar o docente", e);
+            return ResponseEntity.status(500).body("Erro ao guardar o docente. Tente novamente.");
+
         }
     }
 
@@ -73,7 +83,9 @@ public class UtilizadorController {
         try {
             return ResponseEntity.ok(utilizadorService.salvarDirecaoCompleto(payload));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(e.getMessage());
+            log.error("Erro ao guardar a direcao", e);
+            return ResponseEntity.status(500).body("Erro ao guardar a direcao. Tente novamente.");
+
         }
     }
 

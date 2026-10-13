@@ -1,5 +1,7 @@
 package com.vendanza.backend.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.vendanza.backend.models.Modalidade;
 import com.vendanza.backend.models.ModalidadeDocente;
 import com.vendanza.backend.repositories.ModalidadeDocenteRepository;
@@ -14,6 +16,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/modalidade")
 public class ModalidadeController {
+
+    private static final Logger log = LoggerFactory.getLogger(ModalidadeController.class);
 
     @Autowired
     private ModalidadeRepository modalidadeRepository;
@@ -45,7 +49,8 @@ public class ModalidadeController {
             Modalidade guardada = modalidadeRepository.save(modalidade);
             return ResponseEntity.ok(guardada);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erro ao guardar modalidade: " + e.getMessage());
+            log.error("Erro ao guardar modalidade", e);
+            return ResponseEntity.status(500).body("Erro ao guardar modalidade. Tente novamente.");
         }
     }
 
@@ -59,7 +64,8 @@ public class ModalidadeController {
             }
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erro ao eliminar modalidade: " + e.getMessage());
+            log.error("Erro ao eliminar modalidade", e);
+            return ResponseEntity.status(500).body("Erro ao eliminar modalidade. Tente novamente.");
         }
     }
 
@@ -107,7 +113,8 @@ public class ModalidadeController {
             ModalidadeDocente guardada = modDocenteRepo.save(atribuicao);
             return ResponseEntity.ok(guardada);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erro ao guardar atribuição: " + e.getMessage());
+            log.error("Erro ao guardar atribuição", e);
+            return ResponseEntity.status(500).body("Erro ao guardar atribuição. Tente novamente.");
         }
     }
 
@@ -121,7 +128,8 @@ public class ModalidadeController {
             }
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erro ao eliminar atribuição: " + e.getMessage());
+            log.error("Erro ao eliminar atribuição", e);
+            return ResponseEntity.status(500).body("Erro ao eliminar atribuição. Tente novamente.");
         }
     }
 }

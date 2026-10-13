@@ -1,5 +1,7 @@
 package com.vendanza.backend.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.vendanza.backend.models.*;
 import com.vendanza.backend.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,9 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/inventario")
-public class InventarioController {
+public class InventarioController {
+
+    private static final Logger log = LoggerFactory.getLogger(InventarioController.class);
 
     @Autowired private ArtefactoRepository artefactoRepository;
     @Autowired private AluguerRepository aluguerRepository;
@@ -47,7 +51,8 @@ public class InventarioController {
             Artefacto novoItem = artefactoRepository.save(artefacto);
             return ResponseEntity.ok(novoItem);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Erro ao salvar peça: " + e.getMessage());
+            log.error("Erro ao salvar peça", e);
+            return ResponseEntity.internalServerError().body("Erro ao salvar peça. Tente novamente.");
         }
     }
 
@@ -95,7 +100,8 @@ public class InventarioController {
 
             return ResponseEntity.ok(novoAluguer);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Erro ao processar aluguer: " + e.getMessage());
+            log.error("Erro ao processar aluguer", e);
+            return ResponseEntity.internalServerError().body("Erro ao processar aluguer. Tente novamente.");
         }
     }
 
@@ -163,7 +169,8 @@ public class InventarioController {
 
             return ResponseEntity.ok(aluguer);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Erro ao aprovar: " + e.getMessage());
+            log.error("Erro ao aprovar", e);
+            return ResponseEntity.internalServerError().body("Erro ao aprovar. Tente novamente.");
         }
     }
 
@@ -191,7 +198,8 @@ public class InventarioController {
 
             return ResponseEntity.ok(aluguer);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Erro ao recusar: " + e.getMessage());
+            log.error("Erro ao recusar", e);
+            return ResponseEntity.internalServerError().body("Erro ao recusar. Tente novamente.");
         }
     }
 
@@ -217,7 +225,8 @@ public class InventarioController {
 
             return ResponseEntity.ok(aluguer);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Erro ao devolver: " + e.getMessage());
+            log.error("Erro ao devolver", e);
+            return ResponseEntity.internalServerError().body("Erro ao devolver. Tente novamente.");
         }
     }
 

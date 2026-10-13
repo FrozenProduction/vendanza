@@ -89,6 +89,26 @@ function injetarModaisAdmin() {
     });
 }
 
+/** Escapa texto que vem da API antes de o meter em innerHTML. */
+function esc(valor) {
+    if (valor === null || valor === undefined) return "";
+    return String(valor).replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[c]));
+}
+window.esc = esc;
+
+/** Uma mensagem por falha, nao uma por cada pedido de uma pagina. */
+let ultimoAvisoApi = 0;
+function avisarFalhaApi(detalhe) {
+    const agora = Date.now();
+    if (agora - ultimoAvisoApi < 4000) return;
+    ultimoAvisoApi = agora;
+    if (typeof adminNotificar === "function") {
+        adminNotificar("Falha a contactar o servidor", detalhe || "", "error");
+    }
+}
+
 function adminNotificar(titulo, mensagem, tipo = "info") {
     injetarModaisAdmin();
     const titleEl = document.getElementById("admin-dialog-notify-title");
@@ -158,28 +178,33 @@ async function fetchComToken(url, options = {}) {
     const response = await fetch(url, { ...options, headers });
 
     if (!response.ok) {
-      if (response.status === 403) {
-        console.warn("Acesso Negado (403): Provável erro de Token ou falta de permissão.");
+      let errorText = "";
+      try {
+        errorText = await response.text();
+      } catch (e) {
+        errorText = "";
       }
-      const errorText = await response.text();
+      const detalhe = response.status === 403
+        ? "Sessao sem permissoes ou expirada. Volte a entrar."
+        : `Erro ${response.status} na API.`;
       console.error(`Erro na API (${response.status}):`, errorText);
-      
-      // Retornar um objeto que imita a resposta mas evita erro no .json()
+      avisarFalhaApi(detalhe);
       return {
         ok: false,
         status: response.status,
         text: () => Promise.resolve(errorText),
-        json: () => Promise.resolve([]) // Retorna array vazio para não quebrar os loops .forEach/.filter
+        json: () => Promise.resolve([]),
       };
     }
     return response;
   } catch (error) {
     console.error("Erro de rede:", error);
+    avisarFalhaApi("Sem ligacao a API.");
     return {
       ok: false,
       status: 500,
       text: () => Promise.resolve(error.message),
-      json: () => Promise.resolve([])
+      json: () => Promise.resolve([]),
     };
   }
 }
@@ -687,7 +712,7 @@ function renderizarGrelhaRegular() {
         if (!pos) return;
 
         const doc = listaDocentesCache.find((d) => d.idDocente === h.idDocente);
-        const nomeDocente = doc ? `${doc.nome} ${doc.apelido || ""}`.trim() : "Prof. N/A";
+        const nomeDocente = doc ? `${esc(doc.nome)} ${esc(doc.apelido || "")}`.trim() : "Prof. N/A";
         const modNome = h.modalidade?.descricao || "Turma";
         const estudioTxt = h.idEstudio || h.estudio ? ` · ${textoEstudio(h.idEstudio, h.estudio)}` : "";
 
@@ -1057,7 +1082,7 @@ async function carregarUtilizadores() {
       const tr = document.createElement("tr");
       tr.innerHTML = `
                 <td>${user.id}</td>
-                <td>${user.email}</td>
+                <td>${esc(user.email)}</td>
                 <td>******</td>
                 <td>
                     <label class="badge ${user.isactive === 1 ? "badge-success" : "badge-danger"}">
@@ -1065,7 +1090,7 @@ async function carregarUtilizadores() {
                     </label>
                 </td>
                 <td>${dataFormatada}</td>
-                <td>${user.nome || "N/A"}</td>
+                <td>${esc(user.nome || "N/A")}</td>
                 <td>${user.tipo}</td>
                 <td>
                     <a href="../forms/form_utilizadores.html?id=${user.id}" class='btn btn-dark p-2'><i class='fa fa-pencil'></i></a>
@@ -1210,10 +1235,10 @@ async function carregarEncarregados() {
                 <td>${enc.apelidoAluno}</td>
                 <td>${enc.nomeEncEducacao}</td>
                 <td>${enc.apelidoEncEducacao}</td>
-                <td>${enc.telefone}</td>
+                <td>${esc(enc.telefone)}</td>
                 <td>${enc.dataNascimento}</td>
-                <td>${enc.iban}</td>
-                <td>${enc.nif}</td>
+                <td>${esc(enc.iban)}</td>
+                <td>${esc(enc.nif)}</td>
                 <td>${enc.cp}</td>
                 <td>
                     <a href="../forms/form_enceducacao.html?id=${enc.idEncEducacao}" class='btn btn-dark p-2'><i class='fa fa-pencil'></i></a>
@@ -1356,12 +1381,12 @@ async function carregarDocentes() {
       tr.innerHTML = `
                 <td>${doc.idDocente}</td>
                 <td>${doc.tipoCoach || 'N/A'}</td>
-                <td>${doc.nome}</td>
-                <td>${doc.apelido}</td>
+                <td>${esc(doc.nome)}</td>
+                <td>${esc(doc.apelido)}</td>
                 <td>${doc.dataNascimento}</td>
-                <td>${doc.morada}</td>
-                <td>${doc.iban}</td>
-                <td>${doc.nif}</td>
+                <td>${esc(doc.morada)}</td>
+                <td>${esc(doc.iban)}</td>
+                <td>${esc(doc.nif)}</td>
                 <td>
                     <a href="../forms/form_professores.html?id=${doc.idDocente}" class="btn btn-dark p-2">
                         <i class="fa fa-pencil"></i>
@@ -1472,8 +1497,8 @@ async function carregarDirecao() {
                 <td>${membro.idDirecao}</td>
                 <td>${membro.nomeGestor}</td>
                 <td>${membro.apelidoGestor}</td>
-                <td>${membro.telefone}</td>
-                <td>${membro.nif}</td>
+                <td>${esc(membro.telefone)}</td>
+                <td>${esc(membro.nif)}</td>
                 <td>
                     <a href="../forms/form_direcao.html?id=${membro.idDirecao}" class='btn btn-dark p-2'><i class='fa fa-pencil'></i></a>
                      <button onclick="eliminarUtilizador(${membro.idDirecao})" class='btn btn-dark p-2'><i class='fa fa-trash'>
@@ -1578,7 +1603,7 @@ async function carregarHorarios() {
             let nomeDocente = "Sem Docente";
             if (h.idDocente) {
                 const doc = docentes.find(d => d.idDocente === h.idDocente);
-                nomeDocente = doc ? `${doc.nome} ${doc.apelido || ''}` : `ID: ${h.idDocente}`;
+                nomeDocente = doc ? `${esc(doc.nome)} ${doc.apelido || ''}` : `ID: ${h.idDocente}`;
             }
 
             const tr = document.createElement("tr");
@@ -1617,7 +1642,7 @@ async function carregarOpcoesHorario() {
         if (selectMod) {
             selectMod.innerHTML = '<option value="">Selecione Modalidade...</option>';
             modalidades.forEach(m => {
-                selectMod.innerHTML += `<option value="${m.idModalidade}">${m.descricao}</option>`;
+                selectMod.innerHTML += `<option value="${m.idModalidade}">${esc(m.descricao)}</option>`;
             });
         }
 
@@ -1677,7 +1702,7 @@ function atualizarDocentesDaModalidade() {
     }
 
     docentesFiltrados.forEach(doc => {
-        selectDocente.innerHTML += `<option value="${doc.idDocente}">${doc.nome} ${doc.apelido || ''}</option>`;
+        selectDocente.innerHTML += `<option value="${doc.idDocente}">${esc(doc.nome)} ${doc.apelido || ''}</option>`;
     });
 }
 
@@ -1806,7 +1831,7 @@ async function carregarAulasPrivadas() {
             <td>${aula.horaFim}</td>
             <td>${aula.duracao} min</td>
             <td>${aula.preco}€</td>
-            <td><span class="badge ${aula.estado === "Cancelada" ? "bg-danger" : "bg-success"}">${aula.estado}</span></td>
+            <td><span class="badge ${aula.estado === "Cancelada" ? "bg-danger" : "bg-success"}">${esc(aula.estado)}</span></td>
             <td>
                 <a href="../forms/form_aulas_particulares.html?id=${aula.idAulaPrivada}" class="btn btn-dark p-2">
                     <i class="fa fa-pencil"></i>
@@ -2148,7 +2173,7 @@ async function carregarEstudios() {
         (e) => `
             <tr>
                 <td>${e.idEstudio}</td>
-                <td>${e.tamanho}</td>
+                <td>${esc(e.tamanho)}</td>
                 <td>${e.alocacao}</td>
                 <td>
                     <a href="../forms/form_estudios.html?id=${e.idEstudio}" class="btn btn-dark p-2">
@@ -2257,7 +2282,7 @@ async function carregarTiposAula() {
         (t) => `
             <tr>
                 <td>${t.codTipoAula}</td>
-                <td>${t.descricao}</td>
+                <td>${esc(t.descricao)}</td>
                 <td>
                     <a href="../forms/form_tipoaula.html?id=${t.codTipoAula}" class="btn btn-dark p-2">
                             <i class="fa fa-pencil"></i>
@@ -2367,7 +2392,7 @@ async function carregarModalidadesGeral() {
       tbody.innerHTML += `
         <tr>
             <td>${m.idModalidade}</td>
-            <td><strong>${m.descricao}</strong></td>
+            <td><strong>${esc(m.descricao)}</strong></td>
             <td>
                 <a href="../forms/form_modalidades.html?id=${m.idModalidade}" class="btn btn-dark p-2">
                     <i class="fa fa-pencil"></i>
@@ -2506,7 +2531,7 @@ async function carregarOpcoesModalidadeDocente() {
         const selectMod = document.getElementById("id_modalidade");
         
         modalidades.forEach(m => {
-            selectMod.innerHTML += `<option value="${m.idModalidade}">${m.descricao}</option>`;
+            selectMod.innerHTML += `<option value="${m.idModalidade}">${esc(m.descricao)}</option>`;
         });
 
         // Carregar TODOS os Docentes e guardar na memória (Ajusta o URL se o teu API_DOCENTES for diferente)
@@ -2528,7 +2553,7 @@ function ativarSelectDocentes() {
         selectDoc.disabled = false;
         selectDoc.innerHTML = `<option value="">2º Selecione o Professor...</option>`;
         listaGlobalDocentes.forEach(d => {
-            selectDoc.innerHTML += `<option value="${d.idDocente}">${d.nome} ${d.apelido || ''}</option>`;
+            selectDoc.innerHTML += `<option value="${d.idDocente}">${esc(d.nome)} ${d.apelido || ''}</option>`;
         });
     } else {
         // Bloqueia novamente se a modalidade ficar vazia
@@ -2633,7 +2658,7 @@ async function carregarPresencas() {
             selectFiltro.innerHTML = '<option value="todas">Todas as Modalidades</option>';
             modalidades.forEach(m => {
                 // Colocamos o valor em minúsculas para o filtro não falhar com maiúsculas/minúsculas
-                selectFiltro.innerHTML += `<option value="${m.descricao.toLowerCase()}">${m.descricao}</option>`;
+                selectFiltro.innerHTML += `<option value="${m.descricao.toLowerCase()}">${esc(m.descricao)}</option>`;
             });
         }
 
@@ -2813,7 +2838,7 @@ function ativarSelectModalidades() {
         selectMod.disabled = false;
         selectMod.innerHTML = `<option value="">2º Selecione a Modalidade...</option>`;
         listaGlobalModalidadesInscricao.forEach(m => {
-            selectMod.innerHTML += `<option value="${m.idModalidade}">${m.descricao}</option>`;
+            selectMod.innerHTML += `<option value="${m.idModalidade}">${esc(m.descricao)}</option>`;
         });
     } else {
         // Se voltou a meter "Selecione o Aluno", volta a bloquear
@@ -3033,7 +3058,7 @@ async function carregarAtribuicoesAluguer() {
                         : "";
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
-                    <td>${descricaoArtefactoAluguer(p.idArtefacto)}${competicao}</td>
+                    <td>${esc(descricaoArtefactoAluguer(p.idArtefacto))}${competicao}</td>
                     <td>${nomeEncarregadoAluguer(p.idEncEducacao)}</td>
                     <td>${formatarDataAluguerAdmin(p.dataInicio)}</td>
                     <td>${formatarDataAluguerAdmin(p.dataFim)}</td>
@@ -3058,7 +3083,7 @@ async function carregarAtribuicoesAluguer() {
             activos.forEach((p) => {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
-                    <td>${descricaoArtefactoAluguer(p.idArtefacto)}</td>
+                    <td>${esc(descricaoArtefactoAluguer(p.idArtefacto))}</td>
                     <td>${nomeEncarregadoAluguer(p.idEncEducacao)}</td>
                     <td>${formatarDataAluguerAdmin(p.dataInicio)} — ${formatarDataAluguerAdmin(p.dataFim)}</td>
                     <td>
@@ -3312,7 +3337,7 @@ async function carregarFaturacaoCoaching() {
                 // AULA ACABOU: Aguarda confirmação do Encarregado
                 badgeEstado = `
                     <span style="display: inline-block; padding: 5px 10px; background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; font-weight: bold; font-size: 0.85rem; border-radius: 50px; text-transform: uppercase;">Aguardando Confirmação</span>
-                    <br><small class="text-muted" style="font-size: 0.75rem; margin-top: 4px; display: inline-block;">(Estado Real: <b>${aula.estado}</b>)</small>
+                    <br><small class="text-muted" style="font-size: 0.75rem; margin-top: 4px; display: inline-block;">(Estado Real: <b>${esc(aula.estado)}</b>)</small>
                 `;
                 
                 botaoAcao = `<button style="min-width: 140px; height: 40px; background-color: #f3f4f6; color: #9ca3af; border: 1px solid #e5e7eb; border-radius: 5px; cursor: not-allowed;" disabled title="Aguarde que a presença seja confirmada">Validar Fatura</button>`;
@@ -3321,7 +3346,7 @@ async function carregarFaturacaoCoaching() {
                 // CONFIRMADA: Pronta a faturar!
                 badgeEstado = `
                     <span style="display: inline-block; padding: 5px 10px; background-color: #dcfce7; color: #059669; font-weight: bold; font-size: 0.85rem; border-radius: 50px; text-transform: uppercase;">Pronta a Faturar</span>
-                    <br><small class="text-muted" style="font-size: 0.75rem; margin-top: 4px; display: inline-block;">(Estado Real: <b>${aula.estado}</b>)</small>
+                    <br><small class="text-muted" style="font-size: 0.75rem; margin-top: 4px; display: inline-block;">(Estado Real: <b>${esc(aula.estado)}</b>)</small>
                 `;
                 
                 botaoAcao = `<button class="btn btn-dark" style="min-width: 140px; height: 40px;" onclick="faturarAula(${aula.idAulaPrivada}, ${aula.idEncEducacao}, ${valorFaturar})">Validar Fatura</button>`;
@@ -3434,7 +3459,7 @@ async function carregarFigurinos() {
             let nomeDonoDocente = "-";
             if (item.idDocente) {
                 const docenteEncontrado = docentes.find(d => d.idDocente === item.idDocente);
-                nomeDonoDocente = docenteEncontrado ? `${docenteEncontrado.nome} ${docenteEncontrado.apelido || ''}`.trim() : `ID: ${item.idDocente}`;
+                nomeDonoDocente = docenteEncontrado ? `${esc(docenteEncontrado.nome)} ${docenteEncontrado.apelido || ''}`.trim() : `ID: ${item.idDocente}`;
             }
 
             // 3. Direção
@@ -3449,14 +3474,14 @@ async function carregarFigurinos() {
             tbody.innerHTML += `
                 <tr>
                     <td>${item.id}</td>
-                    <td><strong>${item.descricao}</strong></td>
-                    <td>${item.estado}</td>
-                    <td>${item.tamanho}</td> 
+                    <td><strong>${esc(item.descricao)}</strong></td>
+                    <td>${esc(item.estado)}</td>
+                    <td>${esc(item.tamanho)}</td> 
                     <td>${item.precoAluguer} €</td>
                     <td class="fw-bold ${corDisponibilidade}">${item.disponibilidade}</td>
                     <td>${imgTag}</td>
-                    <td>${item.categoria}</td>
-                    <td>${item.telefone}</td>
+                    <td>${esc(item.categoria)}</td>
+                    <td>${esc(item.telefone)}</td>
                     <td>${nomeDonoAluno}</td>
                     <td>${nomeDonoDocente}</td>
                     <td>${nomeDonoGestor}</td>
@@ -3517,7 +3542,7 @@ function mudarTipoDono() {
         });
     } else if (tipo === "docente") {
         listaDocentes.forEach(d => {
-            selectFinal.innerHTML += `<option value="${d.idDocente}">${d.nome} ${d.apelido || ''}</option>`;
+            selectFinal.innerHTML += `<option value="${d.idDocente}">${esc(d.nome)} ${d.apelido || ''}</option>`;
         });
     } else if (tipo === "direcao") {
         listaDirecao.forEach(g => {
@@ -3715,7 +3740,7 @@ async function carregarAcessorios() {
                 nomeDonoDocente = `${item.docente.nome} ${item.docente.apelido || ''}`.trim();
             } else if (item.idDocente) {
                 const docenteEncontrado = docentes.find(d => d.idDocente === item.idDocente);
-                nomeDonoDocente = docenteEncontrado ? `${docenteEncontrado.nome} ${docenteEncontrado.apelido || ''}`.trim() : `ID: ${item.idDocente}`;
+                nomeDonoDocente = docenteEncontrado ? `${esc(docenteEncontrado.nome)} ${docenteEncontrado.apelido || ''}`.trim() : `ID: ${item.idDocente}`;
             }
 
             let nomeDonoGestor = "-";
@@ -3731,14 +3756,14 @@ async function carregarAcessorios() {
             tbody.innerHTML += `
                 <tr>
                     <td>${item.id}</td>
-                    <td><strong>${item.descricao}</strong></td>
-                    <td>${item.estado}</td>
-                    <td>${item.tamanho}</td> 
+                    <td><strong>${esc(item.descricao)}</strong></td>
+                    <td>${esc(item.estado)}</td>
+                    <td>${esc(item.tamanho)}</td> 
                     <td>${item.precoAluguer} €</td>
                     <td class="fw-bold ${corDisponibilidade}">${item.disponibilidade}</td>
                     <td>${imgTag}</td>
-                    <td>${item.categoria}</td>
-                    <td>${item.telefone}</td>
+                    <td>${esc(item.categoria)}</td>
+                    <td>${esc(item.telefone)}</td>
                     <td>${nomeDonoAluno}</td>
                     <td>${nomeDonoDocente}</td>
                     <td>${nomeDonoGestor}</td>
@@ -3815,7 +3840,7 @@ async function carregarCenarios() {
                 nomeDonoDocente = `${item.docente.nome} ${item.docente.apelido || ''}`.trim();
             } else if (item.idDocente) {
                 const docenteEncontrado = docentes.find(d => d.idDocente === item.idDocente);
-                nomeDonoDocente = docenteEncontrado ? `${docenteEncontrado.nome} ${docenteEncontrado.apelido || ''}`.trim() : `ID: ${item.idDocente}`;
+                nomeDonoDocente = docenteEncontrado ? `${esc(docenteEncontrado.nome)} ${docenteEncontrado.apelido || ''}`.trim() : `ID: ${item.idDocente}`;
             }
 
             let nomeDonoGestor = "-";
@@ -3831,14 +3856,14 @@ async function carregarCenarios() {
             tbody.innerHTML += `
                 <tr>
                     <td>${item.id}</td>
-                    <td><strong>${item.descricao}</strong></td>
-                    <td>${item.estado}</td>
-                    <td>${item.tamanho}</td> 
+                    <td><strong>${esc(item.descricao)}</strong></td>
+                    <td>${esc(item.estado)}</td>
+                    <td>${esc(item.tamanho)}</td> 
                     <td>${item.precoAluguer} €</td>
                     <td class="fw-bold ${corDisponibilidade}">${item.disponibilidade}</td>
                     <td>${imgTag}</td>
-                    <td>${item.categoria}</td>
-                    <td>${item.telefone}</td>
+                    <td>${esc(item.categoria)}</td>
+                    <td>${esc(item.telefone)}</td>
                     <td>${nomeDonoAluno}</td>
                     <td>${nomeDonoDocente}</td>
                     <td>${nomeDonoGestor}</td>
@@ -3914,7 +3939,7 @@ async function carregarTodos() {
                 nomeDonoDocente = `${item.docente.nome} ${item.docente.apelido || ''}`.trim();
             } else if (item.idDocente) {
                 const docenteEncontrado = docentes.find(d => d.idDocente === item.idDocente);
-                nomeDonoDocente = docenteEncontrado ? `${docenteEncontrado.nome} ${docenteEncontrado.apelido || ''}`.trim() : `ID: ${item.idDocente}`;
+                nomeDonoDocente = docenteEncontrado ? `${esc(docenteEncontrado.nome)} ${docenteEncontrado.apelido || ''}`.trim() : `ID: ${item.idDocente}`;
             }
 
             let nomeDonoGestor = "-";
@@ -3931,14 +3956,14 @@ async function carregarTodos() {
             tbody.innerHTML += `
                 <tr>
                     <td>${item.id}</td>
-                    <td><strong>${item.descricao}</strong></td>
-                    <td>${item.estado}</td>
-                    <td>${item.tamanho}</td> 
+                    <td><strong>${esc(item.descricao)}</strong></td>
+                    <td>${esc(item.estado)}</td>
+                    <td>${esc(item.tamanho)}</td> 
                     <td>${item.precoAluguer} €</td>
                     <td class="fw-bold ${corDisponibilidade}">${item.disponibilidade}</td>
                     <td>${imgTag}</td>
-                    <td>${item.categoria}</td>
-                    <td>${item.telefone}</td>
+                    <td>${esc(item.categoria)}</td>
+                    <td>${esc(item.telefone)}</td>
                     <td>${nomeDonoAluno}</td>
                     <td>${nomeDonoDocente}</td>
                     <td>${nomeDonoGestor}</td>

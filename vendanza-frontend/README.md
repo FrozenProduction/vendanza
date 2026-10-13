@@ -20,7 +20,7 @@
 
 - **React 19** + **Vite 6**
 - **React Router 7** (SPA)
-- API REST: `https://vendanza-api.onrender.com`
+- API REST: `https://vendanza-api-frozen.onrender.com`
 
 ## Como executar
 

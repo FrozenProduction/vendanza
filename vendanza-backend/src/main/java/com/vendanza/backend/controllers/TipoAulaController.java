@@ -1,5 +1,7 @@
 package com.vendanza.backend.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.vendanza.backend.models.TipoAula;
 import com.vendanza.backend.repositories.TipoAulaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import java.util.List;
 @RequestMapping("/api/tipos-aula")
 @CrossOrigin(origins = "*")
 public class TipoAulaController {
+
+    private static final Logger log = LoggerFactory.getLogger(TipoAulaController.class);
 
     @Autowired
     private TipoAulaRepository tipoAulaRepository;
@@ -37,7 +41,8 @@ public class TipoAulaController {
             TipoAula guardado = tipoAulaRepository.save(tipoAula);
             return ResponseEntity.ok(guardado);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erro ao guardar tipo de aula: " + e.getMessage());
+            log.error("Erro ao guardar tipo de aula", e);
+            return ResponseEntity.status(500).body("Erro ao guardar tipo de aula. Tente novamente.");
         }
     }
 
@@ -51,7 +56,8 @@ public class TipoAulaController {
             }
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erro ao eliminar: " + e.getMessage());
+            log.error("Erro ao eliminar", e);
+            return ResponseEntity.status(500).body("Erro ao eliminar. Tente novamente.");
         }
     }
 }
