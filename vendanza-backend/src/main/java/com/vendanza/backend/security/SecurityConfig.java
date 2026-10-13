@@ -28,7 +28,8 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/utilizadores/login").permitAll()
-                .requestMatchers("/api/utilizadores").permitAll()
+                // RegistO publico removido: nao existe UI de registo e esta regra permitia
+                // criar contas (incluindo tipo 3 = direcao) sem qualquer autenticacao.
                 .requestMatchers("/api/utilizadores/recuperar-passe").permitAll()
                 .requestMatchers("/api/verificar/**").permitAll()
                 .anyRequest().authenticated() 

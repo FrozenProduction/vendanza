@@ -37,6 +37,8 @@ public class UtilizadorController {
     @PostMapping
     public ResponseEntity<?> registar(@RequestBody Utilizador user) {
         try {
+            // Contas com privilegios criam-se por /docentes/completo e /direcao2/completo.
+            user.setTipo(2);
             return ResponseEntity.ok(utilizadorService.registar(user));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());

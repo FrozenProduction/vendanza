@@ -38,6 +38,9 @@ public class InventarioController {
     @PostMapping("/itens")
     public ResponseEntity<?> adicionarItem(@RequestBody Artefacto artefacto) {
         try {
+            if (artefacto.getPrecoAluguer() != null && artefacto.getPrecoAluguer() < 0) {
+                return ResponseEntity.badRequest().body("O preco de aluguer nao pode ser negativo.");
+            }
             if (artefacto.getDisponibilidade() == null) {
                 artefacto.setDisponibilidade(DISPONIVEL);
             }
@@ -277,6 +280,9 @@ public class InventarioController {
     @PutMapping("/itens/{id}")
     public ResponseEntity<?> atualizarItem(@PathVariable Integer id, @RequestBody Artefacto detalhes) {
         return artefactoRepository.findById(id).map(item -> {
+            if (detalhes.getPrecoAluguer() != null && detalhes.getPrecoAluguer() < 0) {
+                return ResponseEntity.badRequest().body("O preco de aluguer nao pode ser negativo.");
+            }
             item.setDescricao(detalhes.getDescricao());
             item.setCategoria(detalhes.getCategoria());
             item.setTamanho(detalhes.getTamanho());
@@ -311,6 +317,9 @@ public class InventarioController {
     @PutMapping("/itens2/{id}")
     public ResponseEntity<?> atualizarItens(@PathVariable Integer id, @RequestBody Artefacto detalhes) {
         return artefactoRepository.findById(id).map(item -> {
+            if (detalhes.getPrecoAluguer() != null && detalhes.getPrecoAluguer() < 0) {
+                return ResponseEntity.badRequest().body("O preco de aluguer nao pode ser negativo.");
+            }
             item.setDescricao(detalhes.getDescricao());
             item.setCategoria(detalhes.getCategoria());
             item.setTamanho(detalhes.getTamanho());

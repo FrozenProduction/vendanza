@@ -23,7 +23,8 @@ public class UtilizadorService {
 
     public AuthResponse login(LoginRequest request) {
         Utilizador user = utilizadorRepository.findFirstByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Utilizador não encontrado"));
+                // Mesma mensagem que a password errada: nao revela se o email existe.
+                .orElseThrow(() -> new RuntimeException("Credenciais inválidas"));
 
         if (BCrypt.checkpw(request.getPassword(), user.getPassword())) {
             String token = jwtService.generateToken(user.getEmail());

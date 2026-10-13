@@ -1,5 +1,7 @@
 package com.vendanza.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 //import java.time.LocalDate;
@@ -43,7 +45,10 @@ public class Utilizador {
     public void setId(Integer id) { this.id = id; }
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+    @JsonIgnore // nunca sai nas respostas JSON (login, listagens)
     public String getPassword() { return password; }
+
+    @JsonProperty // mantem a entrada de JSON (registo/perfil) a funcionar
     public void setPassword(String password) { this.password = password; }
     public Short getIsactive() { return isactive; }
     public void setIsactive(Short isactive) { this.isactive = isactive; }
