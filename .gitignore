@@ -1,7 +1,7 @@
 # ── Segredos: NUNCA versionar ─────────────────────────────────────────────
-application.properties
+# NOTA: application.properties VAI versionado — so tem placeholders e le DB_URL/DB_USER/DB_PASSWORD.
+# Overrides locais com credenciais reais: application-local.properties (ignorado) + SPRING_PROFILES_ACTIVE=local
 application-*.properties
-!application-example.properties
 *.env
 .env*
 !.env.example

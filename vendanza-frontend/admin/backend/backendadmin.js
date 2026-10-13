@@ -1,18 +1,18 @@
 //#region .......
 
 // Mesma API que o portal React (src/api/config.js) — aluno e direção veem os mesmos dados.
-const API_URL = "https://vendanza-api.onrender.com/api/utilizadores";
-const API_INVENTARIO = "https://vendanza-api.onrender.com/api/inventario";
-const API_HORARIO = "https://vendanza-api.onrender.com/api/horario";
-const API_MODALIDADE = "https://vendanza-api.onrender.com/api/modalidade";
-const API_AULAS = "https://vendanza-api.onrender.com/api/aulas";
-const API_ESTUDIOS = "https://vendanza-api.onrender.com/api/estudios";
-const API_TIPO_AULA = "https://vendanza-api.onrender.com/api/tipos-aula";
-const API_PRESENCAS = "https://vendanza-api.onrender.com/api/presencas";
-const API_INSCRICOES = "https://vendanza-api.onrender.com/api/inscricoes";
-const API_AULAS_PRIVADAS = "https://vendanza-api.onrender.com/api/aulas-privadas";
-const API_PAGAMENTOS = "https://vendanza-api.onrender.com/api/pagamentos";
-const API_VERIFICAR = "https://vendanza-api.onrender.com/api/verificar";
+const API_URL = "https://vendanza-api-frozen.onrender.com/api/utilizadores";
+const API_INVENTARIO = "https://vendanza-api-frozen.onrender.com/api/inventario";
+const API_HORARIO = "https://vendanza-api-frozen.onrender.com/api/horario";
+const API_MODALIDADE = "https://vendanza-api-frozen.onrender.com/api/modalidade";
+const API_AULAS = "https://vendanza-api-frozen.onrender.com/api/aulas";
+const API_ESTUDIOS = "https://vendanza-api-frozen.onrender.com/api/estudios";
+const API_TIPO_AULA = "https://vendanza-api-frozen.onrender.com/api/tipos-aula";
+const API_PRESENCAS = "https://vendanza-api-frozen.onrender.com/api/presencas";
+const API_INSCRICOES = "https://vendanza-api-frozen.onrender.com/api/inscricoes";
+const API_AULAS_PRIVADAS = "https://vendanza-api-frozen.onrender.com/api/aulas-privadas";
+const API_PAGAMENTOS = "https://vendanza-api-frozen.onrender.com/api/pagamentos";
+const API_VERIFICAR = "https://vendanza-api-frozen.onrender.com/api/verificar";
 
 // Desenvolvimento local (descomentar e comentar o bloco acima):
 /* const API_URL = "http://localhost:8080/api/utilizadores";

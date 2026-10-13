@@ -1,4 +1,4 @@
-export const API_BASE = 'https://vendanza-api.onrender.com/api';
+export const API_BASE = 'https://vendanza-api-frozen.onrender.com/api';
 
 /* Desenvolvimento local:
 export const API_BASE = 'http://localhost:8080/api';

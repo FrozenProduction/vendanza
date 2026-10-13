@@ -21,7 +21,7 @@ Informáticos, Escola Superior de Tecnologia / UPCA, 1.º semestre de 2025/26.
 |---|---|
 | Backend | Java + Spring Boot (Web, Data JPA, Security), PostgreSQL, **JWT** (jjwt), **bcrypt** (jbcrypt) |
 | Frontend | React 19 + Vite 6 + React Router 7 (SPA); painel da direção em HTML/JS |
-| Base de dados | PostgreSQL — 23 tabelas; estrutura e dados de exemplo em `vendanza-frontend/db.sql` |
+| Base de dados | PostgreSQL — 23 tabelas; estrutura e dados de exemplo em `vendanza-frontend/db-postgres.sql` |
 
 ## Estrutura do repositório
 
@@ -40,16 +40,16 @@ vendanza/
     ├── src/                     # pages, components, api, context, hooks
     ├── css/ · imagens/          # estilos e recursos partilhados
     ├── admin/                   # painel da direção (HTML legado)
-    └── db.sql                   # estrutura + dados de exemplo da base de dados
+    └── db-postgres.sql          # estrutura + dados de exemplo da base de dados
 ```
 
 ## Como executar
 
 ### Backend
 
-1. Criar uma base de dados PostgreSQL e carregar `vendanza-frontend/db.sql`.
-2. Copiar `vendanza-backend/src/main/resources/application-example.properties` para
-   `application.properties` e preencher (ou definir `DB_URL`, `DB_USER`, `DB_PASSWORD`).
+1. Criar uma base de dados PostgreSQL e carregar `vendanza-frontend/db-postgres.sql`.
+2. Definir `DB_URL`, `DB_USER` e `DB_PASSWORD` (o `application.properties` versionado lê essas
+   variáveis de ambiente e não tem segredos).
 3. Correr:
 
 ```bash
@@ -89,8 +89,9 @@ Todos os recursos seguem o mesmo formato: `GET` (listar), `GET /{id}` (detalhe),
 
 - Autenticação por **JWT**; palavras-passe guardadas com **bcrypt** (nunca em texto simples).
 - A configuração da base de dados **lê as credenciais de variáveis de ambiente** — nenhuma password
-  pertence ao repositório. `application.properties` está no `.gitignore`; usa-se
-  `application-example.properties` como modelo.
+  pertence ao repositório. O `application.properties` versionado só tem placeholders
+  (`${DB_URL:…}`, `${DB_USER:…}`, `${DB_PASSWORD:…}`); para desenvolvimento local usa-se
+  `application-local.properties` (ignorado pelo git) com `SPRING_PROFILES_ACTIVE=local`.
 
 ## Autores
 
@@ -106,6 +107,4 @@ Equipa de 5 — Licenciatura em Engenharia de Sistemas Informáticos, EST/UPCA:
 
 - O painel da direção (`vendanza-frontend/admin/`) é HTML/JS legado: foi mantido por âmbito, o núcleo
   do utilizador está todo em React.
-- `db.sql` é um *dump* com sintaxe MySQL (`ENGINE=InnoDB`) embora o backend use PostgreSQL — o import
-  precisa de ajuste (remover `ENGINE=InnoDB` e conferir os tipos).
 - Configuração pensada para um serviço gratuito (porta dinâmica via `PORT`, pool HikariCP reduzido).
