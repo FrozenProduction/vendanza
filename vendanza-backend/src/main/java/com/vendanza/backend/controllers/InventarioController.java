@@ -34,8 +34,6 @@ public class InventarioController {
 
     @GetMapping("/itens")
     public List<Artefacto> listarItens() {
-        libertarAlugueresExpirados();
-        corrigirInventarioInconsistente();
         return artefactoRepository.findAll();
     }
 
@@ -65,7 +63,6 @@ public class InventarioController {
                 return ResponseEntity.badRequest().body("Artefacto não encontrado.");
             }
             Artefacto art = artOpt.get();
-            corrigirInventarioInconsistente();
 
             String estadoPedido = aluguer.getEstado();
 
@@ -107,8 +104,6 @@ public class InventarioController {
 
     @GetMapping("/alugueres/pendentes")
     public List<Aluguer> listarAlugueresPendentes() {
-        libertarAlugueresExpirados();
-        corrigirInventarioInconsistente();
         List<Aluguer> pendentes = aluguerRepository.findPedidosAguardandoAprovacao();
         for (Aluguer a : pendentes) {
             if (!ESTADO_AGUARDAR.equals(a.getEstado())) {
@@ -121,13 +116,11 @@ public class InventarioController {
 
     @GetMapping("/alugueres/ativos")
     public List<Aluguer> listarAlugueresAtivos() {
-        libertarAlugueresExpirados();
         return aluguerRepository.findByEstado(ESTADO_EM_ALUGUER);
     }
 
     @GetMapping("/meus-alugueres/{idEnc}")
     public List<Aluguer> listarMeusAlugueres(@PathVariable Integer idEnc) {
-        libertarAlugueresExpirados();
         return aluguerRepository.findByIdEncEducacao(idEnc);
     }
 
@@ -261,32 +254,7 @@ public class InventarioController {
                 .isEmpty();
     }
 
-    /** Repõe Disponível quando não há aluguer Em Aluguer (corrige dados antigos). */
-    private void corrigirInventarioInconsistente() {
-        for (Artefacto art : artefactoRepository.findAll()) {
-            if (ALUGADO.equals(art.getDisponibilidade()) && !hasActiveRental(art.getId())) {
-                art.setDisponibilidade(DISPONIVEL);
-                artefactoRepository.save(art);
-            }
-        }
-    }
-
-    private void libertarAlugueresExpirados() {
-        LocalDateTime agora = LocalDateTime.now();
-        List<Aluguer> activos = aluguerRepository.findByEstado(ESTADO_EM_ALUGUER);
-        for (Aluguer aluguer : activos) {
-            if (aluguer.getDataFim() != null && aluguer.getDataFim().isBefore(agora)) {
-                aluguer.setEstado(ESTADO_CONCLUIDO);
-                aluguerRepository.save(aluguer);
-                artefactoRepository.findById(aluguer.getIdArtefacto()).ifPresent(art -> {
-                    art.setDisponibilidade(DISPONIVEL);
-                    artefactoRepository.save(art);
-                });
-            }
-        }
-    }
-
-    @PutMapping("/itens/{id}")
+        @PutMapping("/itens/{id}")
     public ResponseEntity<?> atualizarItem(@PathVariable Integer id, @RequestBody Artefacto detalhes) {
         return artefactoRepository.findById(id).map(item -> {
             if (detalhes.getPrecoAluguer() != null && detalhes.getPrecoAluguer() < 0) {

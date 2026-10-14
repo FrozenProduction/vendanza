@@ -109,6 +109,7 @@ CREATE TABLE dados_docente (
   morada VARCHAR(255) NOT NULL,
   iban VARCHAR(255) NOT NULL,
   nif VARCHAR(255) NOT NULL,
+  tipo_coach VARCHAR(255),
   PRIMARY KEY (id_docente),
   CONSTRAINT dados_docente_ibfk_1 FOREIGN KEY (id_docente) REFERENCES phpauth_users(id)
 );
@@ -145,6 +146,8 @@ CREATE TABLE aulasprivadas (
   cod_tipoaula INT NOT NULL,
   preco DOUBLE PRECISION NOT NULL,
   id_docente INT NOT NULL,
+  duracao INT,
+  id_enceducacao INT,
   PRIMARY KEY (id_aulaprivada),
   CONSTRAINT AulasPrivadas_id_modalidade_fkey FOREIGN KEY (id_modalidade) REFERENCES modalidade(id_modalidade),
   CONSTRAINT AulasPrivadas_id_estudio_fkey FOREIGN KEY (id_estudio) REFERENCES estudio(id_estudio),
@@ -159,6 +162,7 @@ CREATE TABLE horario (
   hora_inicio TIME NOT NULL,
   hora_fim TIME NOT NULL,
   id_estudio INT NOT NULL,
+  id_docente INT,
   PRIMARY KEY (id_horario),
   CONSTRAINT horario_id_modalidade_fkey FOREIGN KEY (id_modalidade) REFERENCES modalidade(id_modalidade),
   CONSTRAINT horario_id_estudio_fkey FOREIGN KEY (id_estudio) REFERENCES estudio(id_estudio)
@@ -173,6 +177,7 @@ CREATE TABLE aulas (
   hora_fim TIME NOT NULL,
   id_aulaprivada INT,
   id_horario INT,
+  data_aula DATE,
   PRIMARY KEY (id_aula),
   CONSTRAINT aulas_ibfk_1 FOREIGN KEY (id_modalidade) REFERENCES modalidade(id_modalidade),
   CONSTRAINT aulas_ibfk_2 FOREIGN KEY (cod_tipoaula) REFERENCES tipo_aula(cod_tipoaula),
@@ -237,6 +242,8 @@ CREATE TABLE pagamentos (
   tipo_pagamento INT NOT NULL,
   id_enceducacao INT NOT NULL,
   id_aluguer INT NOT NULL,
+  valor INT,
+  data DATE,
   PRIMARY KEY (id_pagamento),
   CONSTRAINT pagamentos_ibfk_1 FOREIGN KEY (tipo_pagamento) REFERENCES tipo_pagamento(tipo_pagamento),
   CONSTRAINT pagamentos_ibfk_2 FOREIGN KEY (id_enceducacao) REFERENCES dados_aluno(id_enceducacao),
