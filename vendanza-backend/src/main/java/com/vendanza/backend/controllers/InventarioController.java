@@ -21,6 +21,7 @@ public class InventarioController {
     private static final Logger log = LoggerFactory.getLogger(InventarioController.class);
 
     @Autowired private ArtefactoRepository artefactoRepository;
+    @Autowired private com.vendanza.backend.services.AluguerService aluguerService;
     @Autowired private AluguerRepository aluguerRepository;
     @Autowired private PagamentosRepository pagamentosRepository;
 
@@ -54,64 +55,14 @@ public class InventarioController {
         }
     }
 
-    @PostMapping("/alugar")
-    @Transactional
+@PostMapping("/alugar")
     public ResponseEntity<?> criarAluguer(@RequestBody Aluguer aluguer) {
-        try {
-            Optional<Artefacto> artOpt = artefactoRepository.findById(aluguer.getIdArtefacto());
-            if (artOpt.isEmpty()) {
-                return ResponseEntity.badRequest().body("Artefacto não encontrado.");
-            }
-            Artefacto art = artOpt.get();
-
-            String estadoPedido = aluguer.getEstado();
-
-            // Pedido à direção: peça continua disponível; não marca Alugado
-            if (!isLegacyImmediateRental(estadoPedido)) {
-                if (hasActiveRental(aluguer.getIdArtefacto())) {
-                    return ResponseEntity.badRequest().body("Este artefacto já está alugado.");
-                }
-                art.setDisponibilidade(DISPONIVEL);
-                artefactoRepository.save(art);
-
-                aluguer.setEstado(ESTADO_AGUARDAR);
-                Aluguer novoAluguer = aluguerRepository.save(aluguer);
-                return ResponseEntity.ok(novoAluguer);
-            }
-
-            // Fluxo legado (pagamento imediato)
-            if (hasActiveRental(aluguer.getIdArtefacto())) {
-                return ResponseEntity.badRequest().body("Este artefacto já está alugado.");
-            }
-            Aluguer novoAluguer = aluguerRepository.save(aluguer);
-            art.setDisponibilidade(ALUGADO);
-            artefactoRepository.save(art);
-
-            Pagamentos novoPagamento = new Pagamentos();
-            novoPagamento.setTipoPagamento(2);
-            novoPagamento.setIdEncEducacao(aluguer.getIdEncEducacao());
-            novoPagamento.setIdAluguer(novoAluguer.getId());
-            novoPagamento.setValor(aluguer.getValor());
-            novoPagamento.setData(java.time.LocalDate.now());
-            pagamentosRepository.save(novoPagamento);
-
-            return ResponseEntity.ok(novoAluguer);
-        } catch (Exception e) {
-            log.error("Erro ao processar aluguer", e);
-            return ResponseEntity.internalServerError().body("Erro ao processar aluguer. Tente novamente.");
-        }
+        return aluguerService.criarAluguer(aluguer);
     }
 
     @GetMapping("/alugueres/pendentes")
     public List<Aluguer> listarAlugueresPendentes() {
-        List<Aluguer> pendentes = aluguerRepository.findPedidosAguardandoAprovacao();
-        for (Aluguer a : pendentes) {
-            if (!ESTADO_AGUARDAR.equals(a.getEstado())) {
-                a.setEstado(ESTADO_AGUARDAR);
-                aluguerRepository.save(a);
-            }
-        }
-        return pendentes;
+        return aluguerService.listarPendentes();
     }
 
     @GetMapping("/alugueres/ativos")
@@ -124,137 +75,22 @@ public class InventarioController {
         return aluguerRepository.findByIdEncEducacao(idEnc);
     }
 
-    @PutMapping("/aluguer/{id}/aprovar")
-    @Transactional
+@PutMapping("/aluguer/{id}/aprovar")
     public ResponseEntity<?> aprovarAluguer(@PathVariable Integer id) {
-        try {
-            Optional<Aluguer> aluguerOpt = aluguerRepository.findById(id);
-            if (aluguerOpt.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-            Aluguer aluguer = aluguerOpt.get();
-            if (!isEstadoPendente(aluguer.getEstado())) {
-                return ResponseEntity.badRequest().body("Este pedido já foi processado.");
-            }
-
-            Optional<Artefacto> artOpt = artefactoRepository.findById(aluguer.getIdArtefacto());
-            if (artOpt.isEmpty()) {
-                return ResponseEntity.badRequest().body("Artefacto não encontrado.");
-            }
-            Artefacto art = artOpt.get();
-            if (hasActiveRental(aluguer.getIdArtefacto())) {
-                return ResponseEntity.badRequest().body("O artefacto já está alugado.");
-            }
-
-            aluguer.setEstado(ESTADO_EM_ALUGUER);
-            aluguerRepository.save(aluguer);
-
-            List<Aluguer> outrosPendentes = aluguerRepository.findByIdArtefacto(aluguer.getIdArtefacto());
-            for (Aluguer outro : outrosPendentes) {
-                if (!outro.getId().equals(id) && isEstadoPendente(outro.getEstado())) {
-                    outro.setEstado(ESTADO_RECUSADO);
-                    aluguerRepository.save(outro);
-                }
-            }
-
-            art.setDisponibilidade(ALUGADO);
-            artefactoRepository.save(art);
-
-            return ResponseEntity.ok(aluguer);
-        } catch (Exception e) {
-            log.error("Erro ao aprovar", e);
-            return ResponseEntity.internalServerError().body("Erro ao aprovar. Tente novamente.");
-        }
+        return aluguerService.aprovarAluguer(id);
     }
 
-    @PutMapping("/aluguer/{id}/recusar")
-    @Transactional
+@PutMapping("/aluguer/{id}/recusar")
     public ResponseEntity<?> recusarAluguer(@PathVariable Integer id) {
-        try {
-            Optional<Aluguer> aluguerOpt = aluguerRepository.findById(id);
-            if (aluguerOpt.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-            Aluguer aluguer = aluguerOpt.get();
-            if (!isEstadoPendente(aluguer.getEstado())) {
-                return ResponseEntity.badRequest().body("Este pedido já foi processado.");
-            }
-            aluguer.setEstado(ESTADO_RECUSADO);
-            aluguerRepository.save(aluguer);
-
-            artefactoRepository.findById(aluguer.getIdArtefacto()).ifPresent(art -> {
-                if (!hasActiveRental(art.getId())) {
-                    art.setDisponibilidade(DISPONIVEL);
-                    artefactoRepository.save(art);
-                }
-            });
-
-            return ResponseEntity.ok(aluguer);
-        } catch (Exception e) {
-            log.error("Erro ao recusar", e);
-            return ResponseEntity.internalServerError().body("Erro ao recusar. Tente novamente.");
-        }
+        return aluguerService.recusarAluguer(id);
     }
 
-    @PutMapping("/aluguer/{id}/devolver")
-    @Transactional
+@PutMapping("/aluguer/{id}/devolver")
     public ResponseEntity<?> devolverAluguer(@PathVariable Integer id) {
-        try {
-            Optional<Aluguer> aluguerOpt = aluguerRepository.findById(id);
-            if (aluguerOpt.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-            Aluguer aluguer = aluguerOpt.get();
-            if (!ESTADO_EM_ALUGUER.equals(aluguer.getEstado())) {
-                return ResponseEntity.badRequest().body("Apenas alugueres ativos podem ser devolvidos.");
-            }
-            aluguer.setEstado(ESTADO_CONCLUIDO);
-            aluguerRepository.save(aluguer);
-
-            artefactoRepository.findById(aluguer.getIdArtefacto()).ifPresent(art -> {
-                art.setDisponibilidade(DISPONIVEL);
-                artefactoRepository.save(art);
-            });
-
-            return ResponseEntity.ok(aluguer);
-        } catch (Exception e) {
-            log.error("Erro ao devolver", e);
-            return ResponseEntity.internalServerError().body("Erro ao devolver. Tente novamente.");
-        }
+        return aluguerService.devolverAluguer(id);
     }
 
-    private boolean isEstadoPendente(String estado) {
-        if (estado == null || estado.isBlank()) {
-            return false;
-        }
-        String n = normalizeEstado(estado);
-        return n.contains("aguardar") && n.contains("aprova");
-    }
-
-    private boolean isLegacyImmediateRental(String estado) {
-        if (estado == null || estado.isBlank()) {
-            return false;
-        }
-        String n = normalizeEstado(estado);
-        return n.equals("requisitado e pago") || n.equals("pago");
-    }
-
-    private String normalizeEstado(String estado) {
-        String s = estado.trim().toLowerCase(java.util.Locale.ROOT);
-        s = java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFD);
-        return s.replaceAll("\\p{M}", "");
-    }
-
-    private boolean hasActiveRental(Integer idArtefacto) {
-        if (idArtefacto == null) {
-            return false;
-        }
-        return !aluguerRepository
-                .findByIdArtefactoAndEstado(idArtefacto, ESTADO_EM_ALUGUER)
-                .isEmpty();
-    }
-
-        @PutMapping("/itens/{id}")
+                        @PutMapping("/itens/{id}")
     public ResponseEntity<?> atualizarItem(@PathVariable Integer id, @RequestBody Artefacto detalhes) {
         return artefactoRepository.findById(id).map(item -> {
             if (detalhes.getPrecoAluguer() != null && detalhes.getPrecoAluguer() < 0) {
